@@ -7,9 +7,9 @@
 
 #include "ui_Window.h"
 
-#include "csVisOpenGL/Camera.h"
-#include "csVisOpenGL/OrbitCameraController.h"
 #include <QMouseEvent>
+#include <csVisOpenGL/Camera.hpp>
+#include <csVisOpenGL/OrbitCameraController.hpp>
 
 #include "TreeWidgetItem.h"
 
