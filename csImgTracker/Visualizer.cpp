@@ -1,5 +1,4 @@
 #include "Visualizer.h"
-#include <csVisOpenGL/Colors.hpp>
 #include <iostream>
 
 #include <csVisOpenGL/Camera.hpp>

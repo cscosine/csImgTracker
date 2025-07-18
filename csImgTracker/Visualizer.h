@@ -1,9 +1,9 @@
 #pragma once
-#include <csVisOpenGL/BackgroundRenderer.hpp>
-#include <csVisOpenGL/PainterAxes.hpp>
-#include <csVisOpenGL/SingleTextureRenderer.hpp>
-#include <csVisOpenGL/UniformLineRenderer.hpp>
 #include <csVisOpenGL/Visualizer.hpp>
+#include <csVisOpenGL/painters/PainterAxes.hpp>
+#include <csVisOpenGL/renderers/BackgroundRenderer.hpp>
+#include <csVisOpenGL/renderers/SingleTextureRenderer.hpp>
+#include <csVisOpenGL/renderers/UniformLineRenderer.hpp>
 
 #include "Common.h"
 
