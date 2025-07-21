@@ -30,7 +30,7 @@ public:
   Visualizer();
   virtual ~Visualizer();
 
-  void initialize(csVisOpenGL::ShaderFactory* shaderFactory) override;
+  void initialize(csVisOpenGL::ShaderFactory* shaderFactory, std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) override;
   void paintBackground(const csVisOpenGL::Camera& camera) override;
   void paint(const csVisOpenGL::Camera& camera) override;
   void paintTransparent(const csVisOpenGL::Camera& camera) override;

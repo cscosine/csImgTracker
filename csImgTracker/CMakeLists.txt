@@ -23,7 +23,7 @@ cs_add_executable(csImgTracker::csImgTracker ALIAS csImgTracker)
 
 cs_find_package(csImgTracker PUBLIC Eigen3 REQUIRED CONFIG)
 cs_find_package(csImgTracker PUBLIC csCore COMPONENTS core eigenUtils REQUIRED CONFIG)
-cs_find_package(csImgTracker PUBLIC csVisOpenGL REQUIRED COMPONENTS csVisOpenGL CONFIG)
+cs_find_package(csImgTracker PUBLIC csVisOpenGL REQUIRED COMPONENTS csVisOpenGL painters renderers CONFIG)
 
 message(STATUS "Looking for opencv, if error, on linux, try `sudo apt-get install -y libopencv-dev`")
 cs_find_package(csImgTracker PUBLIC OpenCV REQUIRED CONFIG)
@@ -57,7 +57,8 @@ cs_target_link_libraries(csImgTracker
     	csCore::core
 		csCore::eigenUtils
 		csVisOpenGL::csVisOpenGL
-		csVisOpenGL::csVisOpenGL
+		csVisOpenGL::renderers
+		csVisOpenGL::painters
 		csImgTracker::csImgTrackerAssert
 		csImgTrackerLib::csImgTrackerLib_csCMakeBaseInclude
 		Qt6::Widgets

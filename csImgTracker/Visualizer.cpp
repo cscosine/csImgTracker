@@ -12,8 +12,9 @@ Visualizer::Visualizer()
     , tid(-1) {}
 Visualizer::~Visualizer() {}
 
-void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory) {
-  bkgRenderer.initialize(shaderFactory);
+void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory,
+                            std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) {
+  bkgRenderer.initialize(shaderFactory, glExtraFunctions);
 
   {
     /*
@@ -22,7 +23,7 @@ void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory) {
 
     tid = shaderFactory->uploadTexture(img);
     */
-    imageRenderer.initialize(shaderFactory);
+    imageRenderer.initialize(shaderFactory, glExtraFunctions);
     csVisOpenGL::SingleTextureRenderer::Matrix3x4f vectCoords;
     vectCoords.col(0) = Eigen::Vector3f(-1, -1, 0);
     vectCoords.col(1) = Eigen::Vector3f(+1, -1, 0);
@@ -35,14 +36,14 @@ void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory) {
     texCoords.col(3) = Eigen::Vector2f(0, 1);
     // imageRenderer.setTexture(tid, vectCoords, texCoords, csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
 
-    pointsRederer.initialize(shaderFactory);
+    pointsRederer.initialize(shaderFactory, glExtraFunctions);
     pointsRederer.setLineWidth(3);
     pointsRederer.setUniformColor(Eigen::Vector3f(1, 0, 0));
     pointsRederer.setLines(Eigen::Matrix3Xf());
   }
 
 #ifdef SHOW_AXES
-  axesRenderer.initialize(shaderFactory);
+  axesRenderer.initialize(shaderFactory, glExtraFunctions);
   axesRenderer.setPose(Eigen::Isometry3f::Identity(), 1);
 #endif
 

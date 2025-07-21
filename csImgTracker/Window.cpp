@@ -28,7 +28,7 @@
 Window::Window(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::Window())
-    , vis(new Visualizer())
+    , vis(std::make_shared<Visualizer>())
     , _first(true)
     , _rotated(0)
     , video(std::unique_ptr<cv::VideoCapture>()) {
@@ -36,7 +36,7 @@ Window::Window(QWidget* parent)
 
   this->showMaximized();
 
-  ui->preview->addVisualizer(vis.get());
+  ui->preview->addVisualizer(vis);
   // static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController())->setRadius(2);
   static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController())
       ->setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
