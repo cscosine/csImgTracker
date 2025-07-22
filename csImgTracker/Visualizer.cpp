@@ -7,7 +7,7 @@
 #include <math.h>
 
 Visualizer::Visualizer()
-    : csVisOpenGL::Visualizer()
+    : csVisOpenGL::VisualizerInterface()
     , shaderFactory(nullptr)
     , tid(-1) {}
 Visualizer::~Visualizer() {}

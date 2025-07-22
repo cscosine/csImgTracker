@@ -1,5 +1,5 @@
 #pragma once
-#include <csVisOpenGL/Visualizer.hpp>
+#include <csVisOpenGL/VisualizerInterface.hpp>
 #include <csVisOpenGL/painters/PainterAxes.hpp>
 #include <csVisOpenGL/renderers/BackgroundRenderer.hpp>
 #include <csVisOpenGL/renderers/SingleTextureRenderer.hpp>
@@ -11,7 +11,7 @@
 
 // #define SHOW_AXES
 
-class Visualizer : public csVisOpenGL::Visualizer {
+class Visualizer : public csVisOpenGL::VisualizerInterface {
 
   csVisOpenGL::ShaderFactory* shaderFactory;
 
