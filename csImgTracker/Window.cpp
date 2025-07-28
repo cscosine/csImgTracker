@@ -37,25 +37,25 @@ Window::Window(QWidget* parent)
   this->showMaximized();
 
   ui->preview->addVisualizer(vis);
-  // static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController())->setRadius(2);
-  static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController())
-      ->setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
+  // static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController())->setRadius(2);
+  static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController())
+      .setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
 
   csVisOpenGL::OrbitCameraController::Settings enabled;
   enabled.enableRot = false;
   enabled.enableScale = false;
   enabled.enableTrasl = false;
 
-  auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
-  controller->setEnabledControls(enabled);
-  controller->setCameraOrthogonal();
-  controller->setTraslationLimits(-Eigen::Vector3f::Ones(), Eigen::Vector3f::Ones());
-  controller->setMinRadius(2);
-  controller->setMaxRadius(2);
-  controller->setRadius(2, false);
-  // controller->setMinScale(0.25);
-  // controller->setMaxScale(4.0);
-  controller->setZNearFar(-1, 1);
+  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
+  controller.setEnabledControls(enabled);
+  controller.setCameraOrthogonal();
+  controller.setTraslationLimits(-Eigen::Vector3f::Ones(), Eigen::Vector3f::Ones());
+  controller.setMinRadius(2);
+  controller.setMaxRadius(2);
+  controller.setRadius(2, false);
+  // controller.setMinScale(0.25);
+  // controller.setMaxScale(4.0);
+  controller.setZNearFar(-1, 1);
 
   ui->treeWidget->setColumnCount(4);
   ui->treeWidget->setHeaderLabels({"Frame #", "Time [s]", "X [px]", "Y [px]"});
@@ -71,7 +71,7 @@ Window::Window(QWidget* parent)
 
   ui->preview->setCursor(Qt::CrossCursor);
 
-  QObject::connect(controller, &csVisOpenGL::OrbitCameraController::leftDoubleClicked, this, &Window::on_imgDoubleClick);
+  QObject::connect(&controller, &csVisOpenGL::OrbitCameraController::leftDoubleClicked, this, &Window::on_imgDoubleClick);
 
   resetNoVideoData();
   noVideoUpdate();
@@ -109,12 +109,12 @@ void Window::resetNoVideoData() {
 }
 
 void Window::noVideoUpdate() {
-  auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
+  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
   csVisOpenGL::OrbitCameraController::Settings enabled;
   enabled.enableRot = false;
   enabled.enableScale = false;
   enabled.enableTrasl = false;
-  controller->setEnabledControls(enabled);
+  controller.setEnabledControls(enabled);
 
   ui->pushButtonPlay->setEnabled(false);
   ui->horizontalSlider->setEnabled(false);
@@ -345,14 +345,14 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   if (_first) {
     _first = false;
     // reset camera
-    auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
-    controller->setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
-    controller->setPivotPosition(Eigen::Vector3f::Zero(), false);
+    auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
+    controller.setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
+    controller.setPivotPosition(Eigen::Vector3f::Zero(), false);
     csVisOpenGL::OrbitCameraController::Settings enabled;
     enabled.enableRot = false;
     enabled.enableScale = true;
     enabled.enableTrasl = true;
-    controller->setEnabledControls(enabled);
+    controller.setEnabledControls(enabled);
 
     on_pushButtonFit_clicked();
   }
@@ -378,12 +378,12 @@ void Window::on_pushButtonRotateLeft_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
-  auto ypr = controller->getYprDest();
+  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
+  auto ypr = controller.getYprDest();
   ypr(0) -= M_PI / 2;
   _rotated = _rotated + 1;
   _rotated = _rotated % 4;
-  controller->setYpr(ypr, true);
+  controller.setYpr(ypr, true);
 
   updateRotateCoord();
 }
@@ -392,13 +392,13 @@ void Window::on_pushButtonRotateRight_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
-  auto ypr = controller->getYprDest();
+  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
+  auto ypr = controller.getYprDest();
   ypr(0) += M_PI / 2;
   _rotated = _rotated - 1;
   if (_rotated < 0)
     _rotated = 3;
-  controller->setYpr(ypr, true);
+  controller.setYpr(ypr, true);
 
   updateRotateCoord();
 }
@@ -463,7 +463,7 @@ void Window::on_pushButtonFit_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto controller = static_cast<csVisOpenGL::OrbitCameraController*>(ui->preview->getCameraController());
+  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
   auto viewSize = ui->preview->getCamera().getViewSize();
   float sr = float(viewSize.x()) / float(viewSize.y());
   float ir = 1.0f;
@@ -471,11 +471,11 @@ void Window::on_pushButtonFit_clicked() {
     ir = float(_curimg.width()) / float(_curimg.height());
     if (ir > sr) {
       float scale = ir / sr;
-      controller->setScale(scale, false);
-      controller->setScaleLimits(scale / 4.0f, scale * 4.0f);
+      controller.setScale(scale, false);
+      controller.setScaleLimits(scale / 4.0f, scale * 4.0f);
     } else {
-      controller->setScale(1.0, false);
-      controller->setScaleLimits(0.25f, 4.0f);
+      controller.setScale(1.0, false);
+      controller.setScaleLimits(0.25f, 4.0f);
     }
   } else {
     ir = float(_curimg.width()) / float(_curimg.height());
@@ -495,10 +495,10 @@ void Window::on_pushButtonFit_clicked() {
 
     float scale = std::max(scale1, scale2);
 
-    controller->setScale(scale, false);
-    controller->setScaleLimits(scale / 4.0f, scale * 4.0f);
+    controller.setScale(scale, false);
+    controller.setScaleLimits(scale / 4.0f, scale * 4.0f);
   }
-  controller->setPivotPosition(Eigen::Vector3f::Zero(), false);
+  controller.setPivotPosition(Eigen::Vector3f::Zero(), false);
 }
 
 void Window::on_pushButtonPlay_clicked() {

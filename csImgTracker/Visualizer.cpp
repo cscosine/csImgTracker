@@ -8,21 +8,15 @@
 
 Visualizer::Visualizer()
     : csVisOpenGL::VisualizerInterface()
-    , shaderFactory(nullptr)
     , tid(-1) {}
 Visualizer::~Visualizer() {}
 
-void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory,
+void Visualizer::initialize(csVisOpenGL::ShaderFactory& shaderFactory,
                             std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) {
   bkgRenderer.initialize(shaderFactory, glExtraFunctions);
 
   {
-    /*
-    QImage img(2, 2, QImage::Format_RGB32);
-    img.fill(Qt::red);
 
-    tid = shaderFactory->uploadTexture(img);
-    */
     imageRenderer.initialize(shaderFactory, glExtraFunctions);
     csVisOpenGL::SingleTextureRenderer::Matrix3x4f vectCoords;
     vectCoords.col(0) = Eigen::Vector3f(-1, -1, 0);
@@ -46,8 +40,6 @@ void Visualizer::initialize(csVisOpenGL::ShaderFactory* shaderFactory,
   axesRenderer.initialize(shaderFactory, glExtraFunctions);
   axesRenderer.setPose(Eigen::Isometry3f::Identity(), 1);
 #endif
-
-  this->shaderFactory = shaderFactory;
 }
 
 void Visualizer::paintQt(const csVisOpenGL::Camera& camera, QPainter& painter) {
@@ -88,10 +80,10 @@ void Visualizer::showPoints(const std::vector<Eigen::Vector2f>& points) {
 void Visualizer::setImage(const QImage& img) {
 
   if (tid != -1)
-    shaderFactory->releaseTexture(tid);
+    texturesManager.releaseTexture(tid);
 
   if (!img.isNull()) {
-    tid = shaderFactory->uploadTexture(img);
+    tid = texturesManager.uploadTexture(img);
 
     csVisOpenGL::SingleTextureRenderer::Matrix3x4f vectCoords;
     float ratio = float(img.width()) / float(img.height());

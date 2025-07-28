@@ -1,4 +1,5 @@
 #pragma once
+#include <csVisOpenGL/TexturesManager.hpp>
 #include <csVisOpenGL/VisualizerInterface.hpp>
 #include <csVisOpenGL/painters/PainterAxes.hpp>
 #include <csVisOpenGL/renderers/BackgroundRenderer.hpp>
@@ -13,7 +14,7 @@
 
 class Visualizer : public csVisOpenGL::VisualizerInterface {
 
-  csVisOpenGL::ShaderFactory* shaderFactory;
+  csVisOpenGL::TexturesManager texturesManager;
 
   csVisOpenGL::SingleTextureRenderer imageRenderer;
   csVisOpenGL::BackgroundRenderer bkgRenderer;
@@ -30,7 +31,7 @@ public:
   Visualizer();
   virtual ~Visualizer();
 
-  void initialize(csVisOpenGL::ShaderFactory* shaderFactory, std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) override;
+  void initialize(csVisOpenGL::ShaderFactory& shaderFactory, std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) override;
   void paintBackground(const csVisOpenGL::Camera& camera) override;
   void paint(const csVisOpenGL::Camera& camera) override;
   void paintTransparent(const csVisOpenGL::Camera& camera) override;
