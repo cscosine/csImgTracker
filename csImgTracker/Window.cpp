@@ -9,6 +9,7 @@
 
 #include <QMouseEvent>
 #include <csVisOpenGL/Camera.hpp>
+#include <csVisOpenGL/FrameSignals.hpp>
 #include <csVisOpenGL/OrbitCameraController.hpp>
 
 #include "TreeWidgetItem.h"
@@ -29,33 +30,38 @@ Window::Window(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::Window())
     , vis(std::make_shared<Visualizer>())
+    , m_cameraController(std::make_shared<csVisOpenGL::OrbitCameraController>())
     , _first(true)
     , _rotated(0)
     , video(std::unique_ptr<cv::VideoCapture>()) {
   ui->setupUi(this);
 
+  // add camera controller before show
+  ui->preview->setCameraController(m_cameraController);
+  ui->preview->connectSlotsInterface(*m_cameraController);
+
+  // show before adding visualizer
   this->showMaximized();
 
+  // now can add
   ui->preview->addVisualizer(vis);
-  // static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController())->setRadius(2);
-  static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController())
-      .setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
+
+  m_cameraController->setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
 
   csVisOpenGL::OrbitCameraController::Settings enabled;
   enabled.enableRot = false;
   enabled.enableScale = false;
   enabled.enableTrasl = false;
 
-  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
-  controller.setEnabledControls(enabled);
-  controller.setCameraOrthogonal();
-  controller.setTraslationLimits(-Eigen::Vector3f::Ones(), Eigen::Vector3f::Ones());
-  controller.setMinRadius(2);
-  controller.setMaxRadius(2);
-  controller.setRadius(2, false);
-  // controller.setMinScale(0.25);
-  // controller.setMaxScale(4.0);
-  controller.setZNearFar(-1, 1);
+  m_cameraController->setEnabledControls(enabled);
+  m_cameraController->setCameraOrthogonal();
+  m_cameraController->setTraslationLimits(-Eigen::Vector3f::Ones(), Eigen::Vector3f::Ones());
+  m_cameraController->setMinRadius(2);
+  m_cameraController->setMaxRadius(2);
+  m_cameraController->setRadius(2, false);
+  // m_cameraController->setMinScale(0.25);
+  // m_cameraController->setMaxScale(4.0);
+  m_cameraController->setZNearFar(-1, 1);
 
   ui->treeWidget->setColumnCount(4);
   ui->treeWidget->setHeaderLabels({"Frame #", "Time [s]", "X [px]", "Y [px]"});
@@ -71,7 +77,7 @@ Window::Window(QWidget* parent)
 
   ui->preview->setCursor(Qt::CrossCursor);
 
-  QObject::connect(&controller, &csVisOpenGL::OrbitCameraController::leftDoubleClicked, this, &Window::on_imgDoubleClick);
+  QObject::connect(&ui->preview->getFrameSignals(), &csVisOpenGL::FrameSignals::mouseDoubleClick, this, &Window::on_imgDoubleClick);
 
   resetNoVideoData();
   noVideoUpdate();
@@ -109,12 +115,11 @@ void Window::resetNoVideoData() {
 }
 
 void Window::noVideoUpdate() {
-  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
   csVisOpenGL::OrbitCameraController::Settings enabled;
   enabled.enableRot = false;
   enabled.enableScale = false;
   enabled.enableTrasl = false;
-  controller.setEnabledControls(enabled);
+  m_cameraController->setEnabledControls(enabled);
 
   ui->pushButtonPlay->setEnabled(false);
   ui->horizontalSlider->setEnabled(false);
@@ -345,14 +350,13 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   if (_first) {
     _first = false;
     // reset camera
-    auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
-    controller.setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
-    controller.setPivotPosition(Eigen::Vector3f::Zero(), false);
+    m_cameraController->setYpr(Eigen::Vector3f(-M_PI / 2, M_PI / 2, 0), false);
+    m_cameraController->setPivotPosition(Eigen::Vector3f::Zero(), false);
     csVisOpenGL::OrbitCameraController::Settings enabled;
     enabled.enableRot = false;
     enabled.enableScale = true;
     enabled.enableTrasl = true;
-    controller.setEnabledControls(enabled);
+    m_cameraController->setEnabledControls(enabled);
 
     on_pushButtonFit_clicked();
   }
@@ -378,12 +382,11 @@ void Window::on_pushButtonRotateLeft_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
-  auto ypr = controller.getYprDest();
+  auto ypr = m_cameraController->getYprDest();
   ypr(0) -= M_PI / 2;
   _rotated = _rotated + 1;
   _rotated = _rotated % 4;
-  controller.setYpr(ypr, true);
+  m_cameraController->setYpr(ypr, true);
 
   updateRotateCoord();
 }
@@ -392,35 +395,33 @@ void Window::on_pushButtonRotateRight_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
-  auto ypr = controller.getYprDest();
+  auto ypr = m_cameraController->getYprDest();
   ypr(0) += M_PI / 2;
   _rotated = _rotated - 1;
   if (_rotated < 0)
     _rotated = 3;
-  controller.setYpr(ypr, true);
+  m_cameraController->setYpr(ypr, true);
 
   updateRotateCoord();
 }
 
-void Window::on_imgDoubleClick(QMouseEvent* e) {
+void Window::on_imgDoubleClick(QMouseEvent& e) {
   if (_curimg.isNull())
     return;
   if (ui->pushButtonPlay->isChecked())
     return;
 
   // Get clicking position in OpenGL screen coordinates ([-1, 1], [-1, 1])
-  const auto& camera = ui->preview->getCamera();
+  const auto& camera = m_cameraController->getCamera();
 
-  Eigen::Vector2f clickPos = Eigen::Vector2f(e->pos().x(), camera.getViewSize().y() - 1 - e->pos().y());
+  Eigen::Vector2f clickPos = Eigen::Vector2f(e.pos().x(), camera.getViewSize().y() - 1 - e.pos().y());
+  // normalize to -1:1
   clickPos.x() /= camera.getViewSize().x();
   clickPos.y() /= camera.getViewSize().y();
   clickPos = (clickPos * 2) - Eigen::Vector2f::Ones();
 
   // Compute texture coordinates assuming (-1, -1) is the top-left corner
   Eigen::Vector2f world2DCoords = (camera.getViewProjection().inverse() * Eigen::Vector4f(clickPos.x(), clickPos.y(), 0, 1)).head<2>();
-
-  // std::cout << world2DCoords.transpose() << std::endl;
 
   double ir = double(videoInfo.width) / double(videoInfo.height);
   if (world2DCoords.y() < -1.0)
@@ -463,19 +464,18 @@ void Window::on_pushButtonFit_clicked() {
   if (_curimg.isNull())
     return;
 
-  auto& controller = static_cast<csVisOpenGL::OrbitCameraController&>(ui->preview->getCameraController());
-  auto viewSize = ui->preview->getCamera().getViewSize();
+  auto viewSize = m_cameraController->getViewSize();
   float sr = float(viewSize.x()) / float(viewSize.y());
   float ir = 1.0f;
   if (_rotated % 2 == 0) {
     ir = float(_curimg.width()) / float(_curimg.height());
     if (ir > sr) {
       float scale = ir / sr;
-      controller.setScale(scale, false);
-      controller.setScaleLimits(scale / 4.0f, scale * 4.0f);
+      m_cameraController->setScale(scale, false);
+      m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
     } else {
-      controller.setScale(1.0, false);
-      controller.setScaleLimits(0.25f, 4.0f);
+      m_cameraController->setScale(1.0, false);
+      m_cameraController->setScaleLimits(0.25f, 4.0f);
     }
   } else {
     ir = float(_curimg.width()) / float(_curimg.height());
@@ -495,10 +495,10 @@ void Window::on_pushButtonFit_clicked() {
 
     float scale = std::max(scale1, scale2);
 
-    controller.setScale(scale, false);
-    controller.setScaleLimits(scale / 4.0f, scale * 4.0f);
+    m_cameraController->setScale(scale, false);
+    m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
   }
-  controller.setPivotPosition(Eigen::Vector3f::Zero(), false);
+  m_cameraController->setPivotPosition(Eigen::Vector3f::Zero(), false);
 }
 
 void Window::on_pushButtonPlay_clicked() {

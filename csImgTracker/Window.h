@@ -1,6 +1,7 @@
 #pragma once
 #include "Visualizer.h"
 #include <QMainWindow>
+#include <csVisOpenGL/OrbitCameraController.hpp>
 
 #include "opencv2/opencv.hpp"
 
@@ -25,6 +26,7 @@ class Window : public QMainWindow {
   std::unique_ptr<Ui::Window> ui;
 
   std::shared_ptr<Visualizer> vis;
+  std::shared_ptr<csVisOpenGL::OrbitCameraController> m_cameraController;
 
   std::unique_ptr<cv::VideoCapture> video;
   VideoInfo videoInfo;
@@ -54,7 +56,7 @@ public:
   Window(QWidget* parent = 0);
   virtual ~Window();
 
-  void on_imgDoubleClick(QMouseEvent* e);
+  void on_imgDoubleClick(QMouseEvent& e);
 
 public slots:
 
