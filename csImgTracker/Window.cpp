@@ -37,8 +37,8 @@ Window::Window(QWidget* parent)
   ui->setupUi(this);
 
   // add camera controller before show
-  ui->preview->setCameraController(m_cameraController);
   ui->preview->connectSlotsInterface(*m_cameraController);
+  ui->preview->connectCameraControllerSignals(m_cameraController->getCameraControllerSignals());
 
   // show before adding visualizer
   this->showMaximized();
@@ -412,7 +412,7 @@ void Window::on_imgDoubleClick(QMouseEvent& e) {
     return;
 
   // Get clicking position in OpenGL screen coordinates ([-1, 1], [-1, 1])
-  const auto& camera = m_cameraController->getCamera();
+  const auto& camera = ui->preview->getCamera();
 
   Eigen::Vector2f clickPos = Eigen::Vector2f(e.pos().x(), camera.getViewSize().y() - 1 - e.pos().y());
   // normalize to -1:1
@@ -463,8 +463,9 @@ void Window::on_imgDoubleClick(QMouseEvent& e) {
 void Window::on_pushButtonFit_clicked() {
   if (_curimg.isNull())
     return;
+  const auto& camera = ui->preview->getCamera();
 
-  auto viewSize = m_cameraController->getViewSize();
+  auto viewSize = camera.getViewSize();
   float sr = float(viewSize.x()) / float(viewSize.y());
   float ir = 1.0f;
   if (_rotated % 2 == 0) {
