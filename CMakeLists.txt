@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.31)
-project(csImgTrackerLib VERSION 1.0.0 LANGUAGES CXX)
+project(csImgTrackerSol VERSION 1.0.0 LANGUAGES CXX)
 
 # add the csCMake system
 include(csCMake)
 
-cs_initialize_project(csImgTrackerLib
+cs_initialize_project(csImgTrackerSol
     # add the default configurations supported by this project
     DEFAULT_CONFIG Debug
     DEFAULT_CONFIG Release
