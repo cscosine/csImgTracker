@@ -24,7 +24,6 @@
 #include <iostream>
 
 #include <QTimer>
-#include <qt6/QtCore/qvariant.h>
 
 Window::Window(QWidget* parent)
     : QMainWindow(parent)
