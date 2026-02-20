@@ -273,6 +273,9 @@ jobs:
     - name: Install prerequisites for Linux
       run: ./installRequirements-linux.sh on linux
 
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
+
     - name: checkout csCMake
       uses: actions/checkout@v4
       with:
@@ -682,6 +685,9 @@ jobs:
     - name: Install prerequisites for Linux
       run: ./installRequirements-linux.sh on linux
 
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
+
     - name: checkout csCMake
       uses: actions/checkout@v4
       with:
@@ -1035,6 +1041,9 @@ jobs:
         path: csProjectManager
         ref: cs-main
         token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
 
     - name: checkout csCMake
       uses: actions/checkout@v4
@@ -1415,6 +1424,9 @@ jobs:
         path: csProjectManager
         ref: cs-main
         token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
 
     - name: checkout csCMake
       uses: actions/checkout@v4

@@ -8,6 +8,7 @@ def checkout_func():
         csGetRepository,
         csRunCommand,
         csGetPrecompiledLib,
+        csAddCMakeUserPathFileDefault,
     )
 
     repo_cs_url = "git@github.com"
@@ -23,6 +24,8 @@ def checkout_func():
         command="./installRequirements-linux.sh",
         os_name="linux",
     )
+
+    csAddCMakeUserPathFileDefault(folder="csImgTracker")
 
     csGetRepository(
         repo_cs_url,
