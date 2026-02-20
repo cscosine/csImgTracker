@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(csImgTrackerSol VERSION 1.0.0 LANGUAGES CXX)
+project(csImgTrackerSol VERSION 0.0.1 LANGUAGES CXX)
 
 # add the csCMake system
 include(csCMake)
@@ -13,6 +13,7 @@ cs_initialize_project(csImgTrackerSol CXX_STANDARD 17
     # specifiying on which base configuration they are based as second value,
     # e.g. CUSTOM_CONFIG Paranoid Debug
     CUSTOM_CONFIG Paranoid BASED_ON "Debug,Release," POSTFIX "dp"
+    # STRICT_COMPILATION_ON_CONFIG Paranoid
 )
 
 # add libs, executables, etc
