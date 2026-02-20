@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from typing import Dict, List
+
 
 def checkout_func():
     from csProjectManager.projectManager import (
@@ -16,6 +18,12 @@ def checkout_func():
     _ = csRunCommand
     _ = csGetPrecompiledLib
 
+    csRunCommand(
+        name="Install prerequisites for Linux",
+        command="./installRequirements-linux.sh",
+        os_name="linux",
+    )
+
     csGetRepository(
         repo_cs_url,
         "cscosine/csCMake.git",
@@ -24,27 +32,85 @@ def checkout_func():
         needCMakeUserPathFile=False,
     )
 
-    _ = csGetRepository
-    _ = csRunCommand
-    _ = csGetPrecompiledLib
-    pass
+    libs_os_presets: Dict[str, List[str]] = {
+        "linux": ["linux-ninja", "linux-ninja-multi-config-clang"],
+        "windows": ["msvc2022-x64", "msvc2022-x64-LLVM"],
+    }
+
+    # 3rd party precompiled libraries
+    list_3rdPartyBaseLibs = [
+        "eigen3",
+        "fmt",
+        "fmt-eigen",
+        "cpptrace",
+        "magic_enum",
+        "libassert",
+        "tclap",
+        "Catch2",
+        "pipes",
+        "NamedType",
+        "tl-optional",
+        "tl-expected",
+    ]
+
+    for lib in list_3rdPartyBaseLibs:
+        csGetPrecompiledLib(
+            base_url=repo_https_url + "cscosine",
+            repo="3rdPartyBaseLibs",
+            libName=lib,
+            version="v0.1.0-rc2",
+            libs_os_presets=libs_os_presets,
+        )
+
+    # csBaseLibs precompiled libraries
+    list_csBaseLibs = [
+        "csCore",
+        # "csLie",
+        "csVisOpenGL",
+    ]
+
+    for lib in list_csBaseLibs:
+        csGetPrecompiledLib(
+            base_url=repo_https_url + "cscosine",
+            repo="csBaseLibs",
+            libName=lib,
+            version="v0.1.0-rc1",
+            libs_os_presets=libs_os_presets,
+        )
+
+    # openCV
+    csGetPrecompiledLib(
+        base_url=repo_https_url + "cscosine",
+        repo="csOpenCV",
+        libName="opencv",
+        version="v4.12.0",
+        libs_os_presets=libs_os_presets,
+    )
+
+    # qt
+    qt_presets_mapping: Dict[str, Dict[str, str]] = {
+        "linux": {
+            "linux-ninja": "linux-gcc",
+            "linux-ninja-multi-config-clang": "linux-gcc",
+        },
+        "windows": {
+            "msvc2022-x64": "windows-msvc2022-x64",
+            "msvc2022-x64-LLVM": "windows-msvc2022-x64",
+        },
+    }
+
+    csGetPrecompiledLib(
+        base_url=repo_https_url + "cscosine",
+        repo="csQt6",
+        libName="qt6",
+        version="v6.10.2",
+        libs_os_presets=libs_os_presets,
+        presets_mapping=qt_presets_mapping,
+    )
 
 
 def build_func():
     from csProjectManager.projectManager import csWorkflow, csCustomBuild
-
-    # for interface only libraries, generate a single configuration only (use release)
-    # note, use the {} to enable properly the -po option (preset only)
-    presetRelease = {
-        "linux": ["linux-ninja{release}", "linux-ninja-multi-config-clang"],
-        "windows": ["msvc2022-x64", "msvc2022-x64-LLVM"],
-    }
-
-    # use {debug|release}
-    presetDebugRelease = {
-        "linux": ["linux-ninja{debug|release}", "linux-ninja-multi-config-clang"],
-        "windows": ["msvc2022-x64", "msvc2022-x64-LLVM"],
-    }
 
     # use {debug|release|relWithDebInfo|paranoid}
     presetsAll = {
@@ -55,11 +121,8 @@ def build_func():
         "windows": ["msvc2022-x64", "msvc2022-x64-LLVM"],
     }
 
-    _ = presetRelease
-    _ = presetDebugRelease
-    _ = presetsAll
+    csWorkflow("csImgTracker", presetsAll)
 
-    _ = csWorkflow
     _ = csCustomBuild
 
 

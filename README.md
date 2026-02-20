@@ -1,4 +1,4 @@
-# README standalone project
+# README csImgTracker, what else
 
 TODO
 
