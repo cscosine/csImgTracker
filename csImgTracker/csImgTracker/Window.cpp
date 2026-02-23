@@ -187,7 +187,7 @@ void Window::on_pushButtonOpen_clicked() {
 #endif
 
   std::unique_ptr<cv::VideoCapture> newVideo(new cv::VideoCapture());
-  bool ok = newVideo->open(filename.toStdString());
+  bool ok = newVideo->open(filename.toUtf8().constData());
   // video open correctly?
   if (!ok) {
     QMessageBox::critical(this, "Error", "Error opening video from " + filename);
