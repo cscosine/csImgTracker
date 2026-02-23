@@ -121,7 +121,12 @@ def build_func():
             "linux-ninja{debug|release|relWithDebInfo|paranoid}",
             "linux-ninja-multi-config-clang",
         ],
-        "windows": ["msvc2022-x64", "msvc2022-x64-LLVM"],
+        "windows": [
+            "msvc2022-x64",
+            "msvc2022-x64-LLVM",
+            "msvc2026-x64",
+            "msvc2026-x64-LLVM",
+        ],
     }
 
     csWorkflow("csImgTracker", presetsAll)

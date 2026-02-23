@@ -10,6 +10,14 @@
       "hidden": true
     },
     {
+      "name": "cmake-path-msvc2026-x64",
+      "hidden": true
+    },
+    {
+      "name": "cmake-path-msvc2026-x64-LLVM",
+      "hidden": true
+    },
+    {
       "name": "cmake-path-linux-ninja",
       "hidden": true
     },

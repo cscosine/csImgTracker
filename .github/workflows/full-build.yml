@@ -1786,12 +1786,330 @@ jobs:
           bundle-csImgTracker-${{ env.VERSION }}-csImgTracker-windows-msvc2022-x64-LLVM.zip
     # ---------------------------------------------------
 
+  build-windows-msvc2026-x64:
+    needs: guard
+    if: needs.guard.outputs.should_build == 'true'
+
+    runs-on: windows-latest
+    steps:
+
+
+    # checkout myself
+    - name: checkout
+      uses: actions/checkout@v4
+
+    # ---------------------------------------------------
+    # checkout and commands
+    - name: checkout csProjectManager
+      uses: actions/checkout@v4
+      with:
+        repository: cscosine/csProjectManager.git
+        path: csProjectManager
+        ref: cs-main
+        token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
+
+    - name: checkout csCMake
+      uses: actions/checkout@v4
+      with:
+        repository: cscosine/csCMake.git
+        path: csCMake
+        ref: cs-main
+        token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: pip install -r csProjectManager/requirements.txt
+
+    - name: Run all pre-commit hooks
+      run: python3 project.py --install-hooks --run-hooks
+      working-directory: .
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # additional setup for windows
+    - name: Setup MSVC environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    # note: keep setup cmake after msvc setup to have the correct cmake in path
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
+
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # build section
+    - name: Build windows-msvc2026-x64-csImgTracker (1 / 1)
+      run: cmake --workflow msvc2026-x64 *> ../csImgTracker-windows-msvc2026-x64-1-build_output.log
+      working-directory: csImgTracker
+
+    - name: Upload build log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: csImgTracker-windows-msvc2026-x64-1-build_output.log
+        path: csImgTracker-windows-msvc2026-x64-1-build_output.log
+
+    - name: Show last lines on failure
+      if: failure()
+      run: Get-Content csImgTracker-windows-msvc2026-x64-1-build_output.log -Tail 200
+      working-directory: .
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # zip installation section
+    - name: Zip Installations windows-msvc2026-x64
+      shell: pwsh
+      run: |
+        if ($env:GITHUB_REF_TYPE -eq "tag") {
+          $VERSION = $env:GITHUB_REF_NAME
+        } else {
+          $VERSION = Get-Date -Format "yyyyMMdd-HHmmss"
+        }
+
+        "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "Using VERSION=$VERSION"
+
+        # zip csImgTracker
+
+        $src = "$env:GITHUB_WORKSPACE\install\msvc2026-x64\csImgTracker"
+        $dst = "$env:GITHUB_WORKSPACE\bundle-csImgTracker-$VERSION-csImgTracker-windows-msvc2026-x64.zip"
+        Write-Host "*** src $src"
+        Write-Host "*** dst $dst"
+
+        if (Test-Path $dst) {
+            Remove-Item $dst
+        }
+
+
+        if (-not (Test-Path $src)) {
+          throw "Source path does not exist: $src"
+        }
+
+        Compress-Archive -Path $src -DestinationPath $dst
+
+    # ---------------------------------------------------
+
+
+    # ---------------------------------------------------
+    # prepare artifacts section
+    - name: Upload Installation Artifacts windows-msvc2026-x64
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-msvc2026-x64
+        if-no-files-found: error
+        path: |
+          bundle-csImgTracker-${{ env.VERSION }}-csImgTracker-windows-msvc2026-x64.zip
+    # ---------------------------------------------------
+
+  build-windows-msvc2026-x64-LLVM:
+    needs: guard
+    if: needs.guard.outputs.should_build == 'true'
+
+    runs-on: windows-latest
+    steps:
+
+
+    # checkout myself
+    - name: checkout
+      uses: actions/checkout@v4
+
+    # ---------------------------------------------------
+    # checkout and commands
+    - name: checkout csProjectManager
+      uses: actions/checkout@v4
+      with:
+        repository: cscosine/csProjectManager.git
+        path: csProjectManager
+        ref: cs-main
+        token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+    - name: copy cmakeUserPath for csImgTracker
+      run: cp csProjectManager/templates/common/cmakeUserPath-default.json csImgTracker/cmakeUserPath.json
+
+    - name: checkout csCMake
+      uses: actions/checkout@v4
+      with:
+        repository: cscosine/csCMake.git
+        path: csCMake
+        ref: cs-main
+        token: ${{ secrets.ACTIONS_ORG_ACCESS }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: pip install -r csProjectManager/requirements.txt
+
+    - name: Run all pre-commit hooks
+      run: python3 project.py --install-hooks --run-hooks
+      working-directory: .
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # additional setup for windows
+    - name: Setup MSVC environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+
+    # note: keep setup cmake after msvc setup to have the correct cmake in path
+    - name: Setup CMake
+      uses: lukka/get-cmake@latest
+
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # build section
+    - name: Build windows-msvc2026-x64-LLVM-csImgTracker (1 / 1)
+      run: cmake --workflow msvc2026-x64-LLVM *> ../csImgTracker-windows-msvc2026-x64-LLVM-1-build_output.log
+      working-directory: csImgTracker
+
+    - name: Upload build log
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: csImgTracker-windows-msvc2026-x64-LLVM-1-build_output.log
+        path: csImgTracker-windows-msvc2026-x64-LLVM-1-build_output.log
+
+    - name: Show last lines on failure
+      if: failure()
+      run: Get-Content csImgTracker-windows-msvc2026-x64-LLVM-1-build_output.log -Tail 200
+      working-directory: .
+    # ---------------------------------------------------
+
+    # ---------------------------------------------------
+    # zip installation section
+    - name: Zip Installations windows-msvc2026-x64-LLVM
+      shell: pwsh
+      run: |
+        if ($env:GITHUB_REF_TYPE -eq "tag") {
+          $VERSION = $env:GITHUB_REF_NAME
+        } else {
+          $VERSION = Get-Date -Format "yyyyMMdd-HHmmss"
+        }
+
+        "VERSION=$VERSION" | Out-File -FilePath $env:GITHUB_ENV -Append
+        Write-Host "Using VERSION=$VERSION"
+
+        # zip csImgTracker
+
+        $src = "$env:GITHUB_WORKSPACE\install\msvc2026-x64-LLVM\csImgTracker"
+        $dst = "$env:GITHUB_WORKSPACE\bundle-csImgTracker-$VERSION-csImgTracker-windows-msvc2026-x64-LLVM.zip"
+        Write-Host "*** src $src"
+        Write-Host "*** dst $dst"
+
+        if (Test-Path $dst) {
+            Remove-Item $dst
+        }
+
+
+        if (-not (Test-Path $src)) {
+          throw "Source path does not exist: $src"
+        }
+
+        Compress-Archive -Path $src -DestinationPath $dst
+
+    # ---------------------------------------------------
+
+
+    # ---------------------------------------------------
+    # prepare artifacts section
+    - name: Upload Installation Artifacts windows-msvc2026-x64-LLVM
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-msvc2026-x64-LLVM
+        if-no-files-found: error
+        path: |
+          bundle-csImgTracker-${{ env.VERSION }}-csImgTracker-windows-msvc2026-x64-LLVM.zip
+    # ---------------------------------------------------
+
 
   # ---------------------------------------------------
   # create release section
   create-release:
     runs-on: ubuntu-latest
-    needs: [ build-linux-linux-ninja, build-linux-linux-ninja-multi-config-clang, build-windows-msvc2022-x64, build-windows-msvc2022-x64-LLVM ]  # waits for all builds
+    needs: [ build-linux-linux-ninja, build-linux-linux-ninja-multi-config-clang, build-windows-msvc2022-x64, build-windows-msvc2022-x64-LLVM, build-windows-msvc2026-x64, build-windows-msvc2026-x64-LLVM ]  # waits for all builds
     if: ${{ github.ref_type == 'tag' }}   # only on tag
     steps:
 
@@ -1819,6 +2137,18 @@ jobs:
           name: windows-msvc2022-x64-LLVM
           path: windows-msvc2022-x64-LLVM
 
+      - name: Download artifacts windows-msvc2026-x64
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-msvc2026-x64
+          path: windows-msvc2026-x64
+
+      - name: Download artifacts windows-msvc2026-x64-LLVM
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-msvc2026-x64-LLVM
+          path: windows-msvc2026-x64-LLVM
+
       - name: Create GitHub release and upload assets
         uses: softprops/action-gh-release@v1
         with:
@@ -1830,6 +2160,8 @@ jobs:
             linux-linux-ninja-multi-config-clang/*.tar.gz
             windows-msvc2022-x64/*.zip
             windows-msvc2022-x64-LLVM/*.zip
+            windows-msvc2026-x64/*.zip
+            windows-msvc2026-x64-LLVM/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # ---------------------------------------------------
