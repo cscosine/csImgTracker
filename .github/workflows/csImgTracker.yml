@@ -737,6 +737,29 @@ jobs:
           tar -xzf workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/${{ steps.filename_csBaseLibs_csCamera.outputs.filename_csBaseLibs_csCamera }} -C workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
           rm -f workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/${{ steps.filename_csBaseLibs_csCamera.outputs.filename_csBaseLibs_csCamera }}
 
+      - name: Get Precompiled Lib csVisOpenGL from csBaseLibs prepare filename
+        id: filename_csBaseLibs_csVisOpenGL
+        shell: python
+        run: |
+          import os
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"filename_csBaseLibs_csVisOpenGL=csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}-csVisOpenGL-1.0.0.tar.gz\n")
+
+      - name: Get Precompiled Lib csVisOpenGL from csBaseLibs download tar.gz
+        uses: robinraju/release-downloader@v1.13
+        with:
+          repository: cscosine/csBaseLibs
+          tag: v0.1.0
+          fileName: ${{ steps.filename_csBaseLibs_csVisOpenGL.outputs.filename_csBaseLibs_csVisOpenGL }}
+          out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
+
+      - name: Get Precompiled Lib csVisOpenGL from csBaseLibs extract tar.gz
+        shell: bash
+        run: |
+          tar -xzf workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/${{ steps.filename_csBaseLibs_csVisOpenGL.outputs.filename_csBaseLibs_csVisOpenGL }} -C workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
+          rm -f workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/${{ steps.filename_csBaseLibs_csVisOpenGL.outputs.filename_csBaseLibs_csVisOpenGL }}
+
       - name: Get Precompiled Lib qt6 prepare filename
         id: filename_csQt6_qt6
         shell: python

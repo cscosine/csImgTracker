@@ -528,6 +528,7 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
     list_csBaseLibs: dict[str, str] = {
         "csCore": "1.0.0",
         "csCamera": "1.0.0",
+        "csVisOpenGL": "1.0.0",
     }
 
     for lib_name, lib_version in list_csBaseLibs.items():
