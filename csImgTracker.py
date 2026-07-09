@@ -26,6 +26,7 @@ from csorchestrator.frontend.cscmake_presets.supported_variants import (
 )
 
 from csorchestrator.frontend.step.step_get_repository import (
+    StepGetRepositoryGitHubSelf,
     StepGetRepositoryGitHub,
     StepGetRepositoryExtraDepthOne,
     StepGetRepositoryExtraAccessToken,
@@ -111,6 +112,15 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
 
     # ----------------------------------------------------------------
     p = o.create_phase("Repos Update")
+
+    # checkout myself for github actions
+    p.add_step(
+        StepGetRepositoryGitHubSelf(
+            name="csImageTracker git self-checkout",
+            description="Checkout csImageTracker repository",
+        )
+    )
+
     p.add_step(
         StepGetRepositoryGitHub(
             name="csCMake Git clone/pull-ff",
