@@ -31,7 +31,7 @@ class Window : public QMainWindow {
   std::unique_ptr<cv::VideoCapture> video;
   VideoInfo videoInfo;
   std::map<int, TimestampAndPoints> _pointsPerFrame;
-  std::map<int, QTreeWidgetItem*> _itemRootPerFrame;
+  std::map<int, QTreeWidgetItem *> _itemRootPerFrame;
 
   QImage _curimg;
   int _curFrame;
@@ -50,13 +50,13 @@ class Window : public QMainWindow {
   QString trackedPoint2Text();
   Eigen::Vector2f toImageCoord(Eigen::Vector2f world);
 
-  void closeEvent(QCloseEvent* e) override;
+  void closeEvent(QCloseEvent *e) override;
 
 public:
-  Window(QWidget* parent = 0);
+  Window(QWidget *parent = 0);
   virtual ~Window();
 
-  void on_imgDoubleClick(QMouseEvent& e);
+  void on_imgDoubleClick(QMouseEvent &e);
 
 public slots:
 
@@ -75,5 +75,5 @@ public slots:
 
   void on_pushButtonOpen_clicked();
 
-  void on_treeWidget_itemDoubleClicked(QTreeWidgetItem* item, int column);
+  void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
 };

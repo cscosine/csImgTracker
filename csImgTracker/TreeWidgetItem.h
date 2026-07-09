@@ -3,9 +3,9 @@
 
 class TreeWidgetItem : public QTreeWidgetItem {
 public:
-  TreeWidgetItem(QTreeWidget* parent);
+  TreeWidgetItem(QTreeWidget *parent);
   virtual ~TreeWidgetItem();
 
 private:
-  bool operator<(const QTreeWidgetItem& other) const override;
+  bool operator<(const QTreeWidgetItem &other) const override;
 };

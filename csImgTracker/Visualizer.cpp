@@ -6,13 +6,12 @@
 
 #include <math.h>
 
-Visualizer::Visualizer()
-    : csVisOpenGL::VisualizerInterface()
-    , tid(-1) {}
+Visualizer::Visualizer() : csVisOpenGL::VisualizerInterface(), tid(-1) {}
 Visualizer::~Visualizer() {}
 
-void Visualizer::initialize(csVisOpenGL::ShaderFactory& shaderFactory,
-                            std::shared_ptr<QOpenGLExtraFunctions> const& glExtraFunctions) {
+void Visualizer::initialize(
+    csVisOpenGL::ShaderFactory &shaderFactory,
+    std::shared_ptr<QOpenGLExtraFunctions> const &glExtraFunctions) {
   bkgRenderer.initialize(shaderFactory, glExtraFunctions);
 
   {
@@ -28,7 +27,8 @@ void Visualizer::initialize(csVisOpenGL::ShaderFactory& shaderFactory,
     texCoords.col(1) = Eigen::Vector2f(1, 0);
     texCoords.col(2) = Eigen::Vector2f(1, 1);
     texCoords.col(3) = Eigen::Vector2f(0, 1);
-    // imageRenderer.setTexture(tid, vectCoords, texCoords, csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
+    // imageRenderer.setTexture(tid, vectCoords, texCoords,
+    // csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
 
     pointsRederer.initialize(shaderFactory, glExtraFunctions);
     pointsRederer.setLineWidth(3);
@@ -42,21 +42,21 @@ void Visualizer::initialize(csVisOpenGL::ShaderFactory& shaderFactory,
 #endif
 }
 
-void Visualizer::paintQt(const csVisOpenGL::Camera& camera, QPainter& painter) {
+void Visualizer::paintQt(const csVisOpenGL::Camera &camera, QPainter &painter) {
   pointsRederer.draw(camera);
 }
 
-void Visualizer::paintBackground(const csVisOpenGL::Camera& camera) {
+void Visualizer::paintBackground(const csVisOpenGL::Camera &camera) {
   bkgRenderer.draw(camera);
 }
 
-void Visualizer::paint(const csVisOpenGL::Camera& camera) {
+void Visualizer::paint(const csVisOpenGL::Camera &camera) {
 #ifdef SHOW_AXES
   axesRenderer.draw(camera);
 #endif
 }
 
-void Visualizer::paintTransparent(const csVisOpenGL::Camera& camera) {
+void Visualizer::paintTransparent(const csVisOpenGL::Camera &camera) {
   if (tid != -1) {
     imageRenderer.draw(camera);
   } else {
@@ -64,7 +64,7 @@ void Visualizer::paintTransparent(const csVisOpenGL::Camera& camera) {
   }
 }
 
-void Visualizer::showPoints(const std::vector<Eigen::Vector2f>& points) {
+void Visualizer::showPoints(const std::vector<Eigen::Vector2f> &points) {
   Eigen::Matrix3Xf ps(3, 4 * points.size());
   float dx = 0.05;
   for (int i = 0; i < points.size(); i++) {
@@ -77,7 +77,7 @@ void Visualizer::showPoints(const std::vector<Eigen::Vector2f>& points) {
   pointsRederer.setLines(ps);
 }
 
-void Visualizer::setImage(const QImage& img) {
+void Visualizer::setImage(const QImage &img) {
 
   if (tid != -1)
     texturesManager.releaseTexture(tid);
@@ -97,7 +97,9 @@ void Visualizer::setImage(const QImage& img) {
     texCoords.col(1) = Eigen::Vector2f(1, 0);
     texCoords.col(2) = Eigen::Vector2f(1, 1);
     texCoords.col(3) = Eigen::Vector2f(0, 1);
-    imageRenderer.setTexture(tid, vectCoords, texCoords, csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
+    imageRenderer.setTexture(
+        tid, vectCoords, texCoords,
+        csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
   } else {
     tid = -1;
     imageRenderer.resetTexture();
