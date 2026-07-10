@@ -617,7 +617,9 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
                     build_generator=opencv_context.context_compiler_generator.build_generator,
                 )
                 return newContext
-        return opencv_context
+            else: 
+                return opencv_context
+        return None
 
     p.add_step(
         StepGetPrecompiledLibGithub(

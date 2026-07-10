@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.31)
 project(csImgTrackerSol VERSION 0.0.1 LANGUAGES CXX)
 
+# add the additional cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+
 # add the csCMake system
 include(csCMake)
 
