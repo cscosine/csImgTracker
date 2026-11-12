@@ -60,14 +60,11 @@ cs_target_link_libraries(csImgTracker
 		csVisOpenGL::renderers
 		csVisOpenGL::painters
 		csImgTracker::csImgTrackerAssert
-		csImgTrackerSol::csImgTrackerSol_csCMakeBaseInclude
-        csImgTrackerSol::csImgTrackerSol_csCMakeCompileOptionsDefault
+		csImgTracker::cscmake_base_include
 		Qt6::Widgets
     opencv_core
 	opencv_videoio
 	opencv_imgcodecs
 )
 
-cs_install_target(csImgTracker csImgTracker DEFAULT)
-
-cs_finalize_target(csImgTracker)
+cs_install_target(csImgTracker COMPONENT csImgTracker DEFAULT)

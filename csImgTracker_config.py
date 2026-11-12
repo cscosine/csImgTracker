@@ -40,7 +40,7 @@ def install_csimgtracker_build_dependencies(
         git_repo="third_party_base_libs",
         project_name="third_party_base_libs",
         project_version="0.1.0",
-        release_tag="v0.1.0-rc3",
+        release_tag="v0.1.0-rc6",
     )
 
     csfoundation_provider = ManifestGithub(
@@ -49,7 +49,7 @@ def install_csimgtracker_build_dependencies(
         git_repo="csfoundation",
         project_name="csfoundation",
         project_version="0.1.0",
-        release_tag="v0.1.0-rc7",
+        release_tag="v0.1.0-rc8",
     )
 
     csqt6_provider = ManifestGithub(
@@ -67,7 +67,7 @@ def install_csimgtracker_build_dependencies(
         git_repo="csopencvcpu",
         project_name="csopencvcpu",
         project_version="5.0.0",
-        release_tag="v5.0.1-rc2",
+        release_tag="v5.0.1-rc3",
     )
 
     external_providers = [
