@@ -5,19 +5,22 @@
 #include <QOpenGLWidget>
 #include <QTimer>
 
+#include <cstdlib>
 #include <iostream>
 
 // --smoke: start, then after a while check that every OpenGL view got its
-// context and quit (exit code 0), else exit code 1; for the automatic runs of
-// the deployed application (CI, a machine without the build)
-static void checkAndQuit(QApplication &app, const Window &window) {
+// context and end (exit code 0), else exit code 1; for the automatic runs of
+// the deployed application (CI, a machine without the build). The process
+// ends right after the check (std::_Exit, the output flushed): no teardown,
+// which the software OpenGL of Mesa on Windows can hang at the unload of its
+// threads, and nothing left to check.
+static void checkAndQuit(const Window &window) {
   const auto views = window.findChildren<QOpenGLWidget *>();
   for (const QOpenGLWidget *view : views) {
     if (!view->isValid() || view->context() == nullptr) {
       std::cerr << "smoke: failed, no OpenGL context for "
                 << view->objectName().toStdString() << std::endl;
-      app.exit(1);
-      return;
+      std::_Exit(1);
     }
   }
   const QSurfaceFormat format =
@@ -27,7 +30,7 @@ static void checkAndQuit(QApplication &app, const Window &window) {
             << views.size() << " OpenGL view(s), OpenGL "
             << format.majorVersion() << "." << format.minorVersion()
             << std::endl;
-  app.exit(0);
+  std::_Exit(0);
 }
 
 int main(int argc, char *argv[]) {
@@ -37,8 +40,7 @@ int main(int argc, char *argv[]) {
 
   Window window(nullptr);
   if (QApplication::arguments().contains("--smoke")) {
-    QTimer::singleShot(2000, &app,
-                       [&app, &window] { checkAndQuit(app, window); });
+    QTimer::singleShot(2000, &app, [&window] { checkAndQuit(window); });
   }
   return app.exec();
 }
