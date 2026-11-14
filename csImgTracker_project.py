@@ -25,7 +25,7 @@ from csorchestrator.frontend.cscmake_presets.supported_variants import (
     BuildConfig,
 )
 from csorchestrator.frontend.local_execution.step_utils import StepExecuteOnlyOn, StepSkipExecutionOnLocal
-from csorchestrator.frontend.step.step_custom_command import StepInstallAptPackages
+from csorchestrator.frontend.step.step_custom_command import StepInstallAptPackages, StepWinPSCommand
 from csorchestrator.frontend.step.step_deployments import StepRunDeployment
 from csorchestrator.frontend.step.step_get_precompiled_lib_github import (
     identity_mapping_function,
@@ -128,6 +128,27 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
         .add_extra(StepExecuteOnlyOn(os=OS.LINUX))
         .add_extra(StepSkipExecutionOnLocal())
     )
+    # Windows CI: no GPU on the runners, and the OpenGL of Windows alone is 1.1 (a real machine: the one of its GPU
+    # driver). The software OpenGL of Mesa (llvmpipe) as the one of the system, where Qt finds it (opengl32sw.dll,
+    # QT_OPENGL=software): the Windows equivalent of Mesa on the Linux runners. Not shipped; not on a developer machine.
+    p.add_step(
+        StepWinPSCommand(
+            name="install the software OpenGL of Mesa",
+            description="Mesa llvmpipe (mesa-dist-win) as opengl32sw.dll in System32, for the smoke run",
+            cmd=[
+                '$ErrorActionPreference = "Stop"',
+                '$version = "25.2.6"',
+                '$url = "https://github.com/pal1000/mesa-dist-win/releases/download/$version/mesa3d-$version-release-msvc.7z"',
+                "Invoke-WebRequest -Uri $url -OutFile mesa.7z",
+                "7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll -omesa -y",
+                'Copy-Item mesa/opengl32.dll "$env:SystemRoot/System32/opengl32sw.dll"',
+                'Copy-Item mesa/libgallium_wgl.dll "$env:SystemRoot/System32/libgallium_wgl.dll"',
+                'Get-Item "$env:SystemRoot/System32/opengl32sw.dll", "$env:SystemRoot/System32/libgallium_wgl.dll"',
+            ],
+        )
+        .add_extra(StepExecuteOnlyOn(os=OS.WINDOWS))
+        .add_extra(StepSkipExecutionOnLocal())
+    )
     p.add_step(
         StepRunDeployment(
             name="Smoke run of the deployment app",
@@ -144,8 +165,9 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
                 ],
                 OS.WINDOWS: ["{folder}/bin/csImgTracker.exe", "--smoke"],
             },
-            # QT_FORCE_STDERR_LOGGING: the messages of Qt in the log (a GUI application on Windows: not on the console)
-            environment={"QT_OPENGL": "software", "QT_FORCE_STDERR_LOGGING": "1"},
+            # QT_FORCE_STDERR_LOGGING: the messages of Qt in the log (a GUI application on Windows: not on the console);
+            # GALLIUM_DRIVER: the software renderer of Mesa
+            environment={"QT_OPENGL": "software", "QT_FORCE_STDERR_LOGGING": "1", "GALLIUM_DRIVER": "llvmpipe"},
             base_build_dir=base_build_dir,
             build_config=build_config,
             archives_dir=deploy_archives_dir,

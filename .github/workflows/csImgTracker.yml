@@ -793,6 +793,18 @@ jobs:
         fi
       if: ${{ matrix.os == 'linux' }}
       shell: bash
+    - name: Run command install the software OpenGL of Mesa
+      run: |-
+        $ErrorActionPreference = "Stop"
+        $version = "25.2.6"
+        $url = "https://github.com/pal1000/mesa-dist-win/releases/download/$version/mesa3d-$version-release-msvc.7z"
+        Invoke-WebRequest -Uri $url -OutFile mesa.7z
+        7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll -omesa -y
+        Copy-Item mesa/opengl32.dll "$env:SystemRoot/System32/opengl32sw.dll"
+        Copy-Item mesa/libgallium_wgl.dll "$env:SystemRoot/System32/libgallium_wgl.dll"
+        Get-Item "$env:SystemRoot/System32/opengl32sw.dll", "$env:SystemRoot/System32/libgallium_wgl.dll"
+      if: ${{ matrix.os == 'windows' }}
+      shell: powershell
     - name: Smoke run of the deployment app
       run: |-
         import sys
@@ -813,7 +825,7 @@ jobs:
         install_system_requirements = True
         expect_exit_code = 0
         timeout_seconds = 120.0
-        environment = {'QT_OPENGL': 'software', 'QT_FORCE_STDERR_LOGGING': '1'}
+        environment = {'QT_OPENGL': 'software', 'QT_FORCE_STDERR_LOGGING': '1', 'GALLIUM_DRIVER': 'llvmpipe'}
 
         os_name = "windows" if sys.platform == "win32" else "macos" if sys.platform == "darwin" else "linux"
         if os_name not in commands:
