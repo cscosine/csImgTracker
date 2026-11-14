@@ -18,6 +18,7 @@ from csorchestrator.application.recipes.create_orchestrator import (
     create_default_orchestrator,
 )
 from csorchestrator.application.recipes.cscmake_release import create_cscmake_release_archive
+from csorchestrator.application.recipes.manifest_github import install_ubuntu_apt_packages
 from csorchestrator.domain.context.context_os_architecture import OS
 from csorchestrator.foundation.core.report import Report
 from csorchestrator.frontend.cscmake_presets.supported_variants import (
@@ -76,6 +77,23 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
         )
     )
 
+    # the libraries of the system the Qt xcb plugin needs: the deployment (cs_deployment) resolves the plugins, and
+    # fails when one is missing on the build machine
+    install_ubuntu_apt_packages(
+        orchestrator=o,
+        packages=[
+            "libxcb-cursor0",
+            "libxcb-icccm4",
+            "libxcb-image0",
+            "libxcb-keysyms1",
+            "libxcb-render-util0",
+            "libxcb-shape0",
+            "libxcb-xkb1",
+            "libxkbcommon-x11-0",
+        ],
+        phase_name_suffix="Qt xcb plugin",
+    )
+
     # ----------------------------------------------------------------
     build_repos(
         orchestrator=o,
@@ -126,7 +144,8 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
                 ],
                 OS.WINDOWS: ["{folder}/bin/csImgTracker.exe", "--smoke"],
             },
-            environment={"QT_OPENGL": "software"},
+            # QT_FORCE_STDERR_LOGGING: the messages of Qt in the log (a GUI application on Windows: not on the console)
+            environment={"QT_OPENGL": "software", "QT_FORCE_STDERR_LOGGING": "1"},
             base_build_dir=base_build_dir,
             build_config=build_config,
             archives_dir=deploy_archives_dir,

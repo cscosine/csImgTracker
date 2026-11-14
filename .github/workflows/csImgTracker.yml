@@ -603,6 +603,39 @@ jobs:
         tar -xzf workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/csopencvcpu-5.0.0-opencv-5.0.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz -C workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
         rm -f workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}/csopencvcpu-5.0.0-opencv-5.0.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
       shell: bash
+    - name: Run command install apt packages
+      run: |-
+        set -euo pipefail # enable strict mode
+
+
+        packages=(
+          libxcb-cursor0
+          libxcb-icccm4
+          libxcb-image0
+          libxcb-keysyms1
+          libxcb-render-util0
+          libxcb-shape0
+          libxcb-xkb1
+          libxkbcommon-x11-0
+        )
+
+        missing=()
+
+        for pkg in "${packages[@]}"; do
+          dpkg -s "$pkg" &>/dev/null || missing+=("$pkg")
+        done
+
+        if [ ${#missing[@]} -ne 0 ]; then
+
+          sudo apt update
+
+          echo "Need to install missing packages: ${missing[*]}"
+          sudo apt install -y "${missing[@]}"
+        else
+          echo "All packages already installed."
+        fi
+      if: ${{ matrix.os == 'linux' && startsWith(matrix.os_version, 'ubuntu') }}
+      shell: bash
     - name: cmake workflow on ./ CMake Workflow for config(s) debug-release-relWithDebInfo-paranoid
       run: |-
         set -e
@@ -780,7 +813,7 @@ jobs:
         install_system_requirements = True
         expect_exit_code = 0
         timeout_seconds = 120.0
-        environment = {'QT_OPENGL': 'software'}
+        environment = {'QT_OPENGL': 'software', 'QT_FORCE_STDERR_LOGGING': '1'}
 
         os_name = "windows" if sys.platform == "win32" else "macos" if sys.platform == "darwin" else "linux"
         if os_name not in commands:
