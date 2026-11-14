@@ -90,10 +90,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   )
   cs_deployment(app PLUGINS Qt6::QWaylandBradientDecorationPlugin DESTINATION plugins/wayland-decoration-client)
 elseif(WIN32)
+  # Windows: next to the executable (bin/platforms), where Qt looks for them (the layout of windeployqt)
   cs_deployment(
     app
     PLUGINS Qt6::QWindowsIntegrationPlugin Qt6::QOffscreenIntegrationPlugin
-    DESTINATION plugins/platforms
+    DESTINATION bin/platforms
   )
   # the software OpenGL of Qt (loaded at run time), for the machines without GPU (QT_OPENGL=software)
   if(EXISTS "${QT6_INSTALL_PREFIX}/bin/opengl32sw.dll")
