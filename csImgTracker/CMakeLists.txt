@@ -68,3 +68,37 @@ cs_target_link_libraries(csImgTracker
 )
 
 cs_install_target(csImgTracker COMPONENT csImgTracker DEFAULT)
+
+# deployment: a folder that runs on another machine, made by the install (Release), with the Qt plugins it needs
+cs_deployment(app TARGETS csImgTracker)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  cs_deployment(
+    app
+    PLUGINS Qt6::QXcbIntegrationPlugin Qt6::QWaylandIntegrationPlugin Qt6::QOffscreenIntegrationPlugin
+    DESTINATION plugins/platforms
+  )
+  cs_deployment(
+    app
+    PLUGINS Qt6::QXcbGlxIntegrationPlugin Qt6::QXcbEglIntegrationPlugin
+    DESTINATION plugins/xcbglintegrations
+  )
+  cs_deployment(app PLUGINS Qt6::QWaylandXdgShellIntegrationPlugin DESTINATION plugins/wayland-shell-integration)
+  cs_deployment(
+    app
+    PLUGINS Qt6::QWaylandEglClientBufferPlugin
+    DESTINATION plugins/wayland-graphics-integration-client
+  )
+  cs_deployment(app PLUGINS Qt6::QWaylandBradientDecorationPlugin DESTINATION plugins/wayland-decoration-client)
+elseif(WIN32)
+  cs_deployment(
+    app
+    PLUGINS Qt6::QWindowsIntegrationPlugin Qt6::QOffscreenIntegrationPlugin
+    DESTINATION plugins/platforms
+  )
+  # the software OpenGL of Qt (loaded at run time), for the machines without GPU (QT_OPENGL=software)
+  if(EXISTS "${QT6_INSTALL_PREFIX}/bin/opengl32sw.dll")
+    cs_deployment(app FILES "${QT6_INSTALL_PREFIX}/bin/opengl32sw.dll" DESTINATION bin)
+  else()
+    message(STATUS "opengl32sw.dll not in ${QT6_INSTALL_PREFIX}/bin: not deployed")
+  endif()
+endif()
