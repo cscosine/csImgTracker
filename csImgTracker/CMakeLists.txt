@@ -1,24 +1,82 @@
-cmake_minimum_required(VERSION 3.31)
-project(csImgTrackerSol VERSION 0.0.1 LANGUAGES CXX)
+project(csImgTracker LANGUAGES CXX)
 
-# add the csCMake system
-include(csCMake)
 
-cs_initialize_project(csImgTrackerSol CXX_STANDARD 17
-    # add the default configurations supported by this project
-    DEFAULT_CONFIG Debug
-    DEFAULT_CONFIG Release
-    DEFAULT_CONFIG_MAPPED RelWithDebInfo MAPPED_TO "RelWithDebInfo,Release,"
-    # and the custom configurations supported by this project,
-    # specifiying on which base configuration they are based as second value,
-    # e.g. CUSTOM_CONFIG Paranoid Debug
-    CUSTOM_CONFIG Paranoid BASED_ON "Debug,Release," POSTFIX "dp"
-    # STRICT_COMPILATION_ON_CONFIG Paranoid
+# prepare custom project asserts, note: use standard find_package
+find_package(csCore REQUIRED COMPONENTS assert CONFIG)
+
+list(APPEND CMAKE_MODULE_PATH "${csCore_BASE_DIR}/cmake/csCore/assert/")
+include(csAssert)
+
+# set defaults for Paranoid additional configuration
+csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT RELEASE Paranoid ON)
+csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT RELWITHDEBINFO Paranoid ON)
+csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT DEBUG Paranoid ON)
+csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT PARANOID Paranoid ON)
+csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT SAFE_MATH Paranoid ON)
+
+csAssertGenerateProject(csImgTracker csImgTracker) #generate target csImgTracker::csImgTrackerAssert
+list(POP_BACK CMAKE_MODULE_PATH)
+
+# prepare standard library
+cs_add_executable(csImgTracker)
+cs_add_executable(csImgTracker::csImgTracker ALIAS csImgTracker)
+
+cs_find_package(csImgTracker PUBLIC Eigen3 REQUIRED CONFIG)
+cs_find_package(csImgTracker PUBLIC csCore COMPONENTS core eigenUtils REQUIRED CONFIG)
+cs_find_package(csImgTracker PUBLIC csVisOpenGL REQUIRED COMPONENTS csVisOpenGL painters renderers CONFIG)
+
+message(STATUS "Looking for opencv, if error, on linux, try `sudo apt-get install -y libopencv-dev`")
+cs_find_package(csImgTracker PUBLIC OpenCV REQUIRED CONFIG)
+get_filename_component(OpenCV_CONFIG_PATH "${OpenCV_DIR}" ABSOLUTE)
+message(STATUS "OpenCVConfig.cmake is located at: ${OpenCV_CONFIG_PATH}")
+
+cs_find_package(csImgTracker PUBLIC Qt6 COMPONENTS Widgets REQUIRED CONFIG)
+
+cs_target_sources(csImgTracker
+	PRIVATE
+  Common.h
+  Common.cpp
+  CvMatAndQImage.h
+  CvMatAndQImage.cpp
+	Visualizer.h
+	Visualizer.cpp
+	TreeWidgetItem.h
+  TreeWidgetItem.cpp
+  Window.h
+	Window.cpp
+	main.cpp
+	Window.ui
+)
+set_target_properties(csImgTracker PROPERTIES AUTOMOC ON)
+set_target_properties(csImgTracker PROPERTIES AUTOUIC ON)
+set_target_properties(csImgTracker PROPERTIES AUTORCC ON)
+
+cs_target_link_libraries(csImgTracker
+	PRIVATE
+		Eigen3::Eigen
+    	csCore::core
+		csCore::eigenUtils
+		csVisOpenGL::csVisOpenGL
+		csVisOpenGL::renderers
+		csVisOpenGL::painters
+		csImgTracker::csImgTrackerAssert
+		csImgTracker::cscmake_base_include
+		Qt6::Widgets
+    opencv_core
+	opencv_videoio
+	opencv_imgcodecs
 )
 
-# add libs, executables, etc
-add_subdirectory(csImgTracker)
-# add_subdirectory(...)
+cs_install_target(csImgTracker COMPONENT csImgTracker DEFAULT)
 
-# remember to add this at the end of the main cmake file
-cs_finalize_project(csImgTracker)
+# deployment: a folder that runs on another machine, made by the install (Release), with the Qt plugins of a GUI
+# application (csCMake cs_deployment_qt_gui, offscreen too) and the sample video (data/, with its credits)
+cs_deployment(app TARGETS csImgTracker)
+cs_deployment(
+  app
+  FILES
+    "${CMAKE_CURRENT_LIST_DIR}/../datasets/big_buck_bunny_2m12s-2m22s.avi"
+    "${CMAKE_CURRENT_LIST_DIR}/../datasets/CREDITS.md"
+  DESTINATION data
+)
+cs_deployment_qt_gui(app OFFSCREEN)
