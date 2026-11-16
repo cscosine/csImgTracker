@@ -70,6 +70,13 @@ cs_target_link_libraries(csImgTracker
 cs_install_target(csImgTracker COMPONENT csImgTracker DEFAULT)
 
 # deployment: a folder that runs on another machine, made by the install (Release), with the Qt plugins of a GUI
-# application (csCMake cs_deployment_qt_gui, offscreen too)
+# application (csCMake cs_deployment_qt_gui, offscreen too) and the sample video (data/, with its credits)
 cs_deployment(app TARGETS csImgTracker)
+cs_deployment(
+  app
+  FILES
+    "${CMAKE_CURRENT_LIST_DIR}/../datasets/big_buck_bunny_2m12s-2m22s.avi"
+    "${CMAKE_CURRENT_LIST_DIR}/../datasets/CREDITS.md"
+  DESTINATION data
+)
 cs_deployment_qt_gui(app OFFSCREEN)

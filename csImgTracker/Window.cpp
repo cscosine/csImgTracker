@@ -14,6 +14,8 @@
 
 #include "TreeWidgetItem.h"
 
+#include <QCoreApplication>
+#include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QStandardPaths>
@@ -168,19 +170,25 @@ void Window::okVideoUpdate() {
                                                .arg(videoInfo.fps));
 }
 
-// #define AUTOLOAD
+// The folder the open dialog starts in: the sample video of the deployment
+// (data/ next to bin/, where cs_deployment puts the executable), when it
+// exists; else the Movies folder of the user.
+static QString defaultVideoDir() {
+  const QDir data(QCoreApplication::applicationDirPath() + "/../data");
+  if (data.exists()) {
+    return data.absolutePath();
+  }
+  auto videoLocations = QStandardPaths::standardLocations(
+      QStandardPaths::StandardLocation::MoviesLocation);
+  return videoLocations.size() > 0 ? videoLocations[0] : "";
+}
 
 void Window::on_pushButtonOpen_clicked() {
   // open the new video
-#ifdef AUTOLOAD
-  filename = "D:/OneDrive/Desktop/vertical.mp4";
-#else
   QString selFilter = "Video File (*.mp4 *.avi *.mkv)";
   QString filter = selFilter + ";; all files (*.*)";
 
-  auto videoLocations = QStandardPaths::standardLocations(
-      QStandardPaths::StandardLocation::MoviesLocation);
-  QString basedir = videoLocations.size() > 0 ? videoLocations[0] : "";
+  QString basedir = defaultVideoDir();
 
   QString filename = QFileDialog::getOpenFileName(this, "Load a video file",
                                                   basedir, filter, &selFilter);
@@ -189,8 +197,6 @@ void Window::on_pushButtonOpen_clicked() {
     // cancelled, return
     return;
   }
-
-#endif
 
   std::unique_ptr<cv::VideoCapture> newVideo(new cv::VideoCapture());
   bool ok = newVideo->open(filename.toUtf8().constData());

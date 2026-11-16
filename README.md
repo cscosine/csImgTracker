@@ -26,6 +26,11 @@ The builds are not signed yet, so Windows and macOS warn the first time:
 - **macOS** (Gatekeeper): after extracting, in Terminal `xattr -dr com.apple.quarantine <extracted folder>`; or run it
   once, then System Settings → Privacy & Security → *Open Anyway*.
 
+The deployment includes a sample video in `data/` (the open dialog starts there): an excerpt of
+[Big Buck Bunny](https://peach.blender.org/) © copyright 2008, Blender Foundation, licensed under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); credits and changes in
+[datasets/CREDITS.md](datasets/CREDITS.md).
+
 ### Alternative versions
 
 The same application built with the other compilers and generators of CI; the builds of a platform are
