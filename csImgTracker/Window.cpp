@@ -17,8 +17,12 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QKeySequence>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QStatusBar>
+#include <QStyle>
 #include <QTreeWidgetItem>
 
 #include "CvMatAndQImage.h"
@@ -65,7 +69,7 @@ Window::Window(QWidget *parent)
   m_cameraController->setZNearFar(-1, 1);
 
   ui->treeWidget->setColumnCount(4);
-  ui->treeWidget->setHeaderLabels({"Frame #", "Time [s]", "X [px]", "Y [px]"});
+  ui->treeWidget->setHeaderLabels({"Frame", "Time [s]", "X [px]", "Y [px]"});
   ui->treeWidget->header()->setStretchLastSection(false);
   ui->treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   ui->treeWidget->setExpandsOnDoubleClick(false);
@@ -73,8 +77,40 @@ Window::Window(QWidget *parent)
   ui->treeWidget->sortByColumn(0, Qt::SortOrder::AscendingOrder);
   ui->treeWidget->header()->setSortIndicatorShown(false);
 
+  ui->splitter->setStretchFactor(0, 1);
   ui->splitter->setStretchFactor(1, 0);
-  ui->splitter->setSizes(QList{700, 100});
+  ui->splitter->setSizes(QList{900, 300});
+
+  // transport bar: icons, play/pause follows the state of the button
+  ui->pushButtonPrev->setIcon(
+      style()->standardIcon(QStyle::SP_MediaSeekBackward));
+  ui->pushButtonNext->setIcon(
+      style()->standardIcon(QStyle::SP_MediaSeekForward));
+  updatePlayButton(false);
+  QObject::connect(ui->pushButtonPlay, &QPushButton::toggled, this,
+                   &Window::updatePlayButton);
+  for (QPushButton *b :
+       {ui->pushButtonPrev, ui->pushButtonPlay, ui->pushButtonNext}) {
+    b->setFocusPolicy(Qt::NoFocus);
+  }
+
+  // keyboard shortcuts (also written in the tooltips)
+  ui->pushButtonOpen->setShortcut(QKeySequence::Open);
+  ui->pushButtonSave->setShortcut(QKeySequence::Save);
+  ui->pushButtonDeleteSelected->setShortcut(QKeySequence::Delete);
+  ui->pushButtonPlay->setShortcut(QKeySequence(Qt::Key_Space));
+  ui->pushButtonPrev->setShortcut(QKeySequence(Qt::Key_Left));
+  ui->pushButtonNext->setShortcut(QKeySequence(Qt::Key_Right));
+  ui->pushButtonFit->setShortcut(QKeySequence(Qt::Key_F));
+
+  // how to use the image view, always visible
+  ui->statusbar->addWidget(
+      new QLabel(QString("Double-click: mark a point     Mouse wheel: zoom     "
+                         "Drag: pan     Space: play / pause     "
+                         "%1 %2: previous / next frame")
+                     .arg(QChar(0x2190))
+                     .arg(QChar(0x2192))));
+  ui->statusbar->setSizeGripEnabled(false);
 
   ui->preview->setCursor(Qt::CrossCursor);
 
@@ -127,16 +163,18 @@ void Window::noVideoUpdate() {
   m_cameraController->setEnabledControls(enabled);
 
   ui->pushButtonPlay->setEnabled(false);
-  ui->horizontalSlider->setEnabled(false);
+  setSeekEnabled(false);
 
   ui->horizontalSlider->blockSignals(true);
   ui->horizontalSlider->setValue(0);
   ui->horizontalSlider->blockSignals(false);
 
-  ui->labelVideoPos->setText("No Video");
+  ui->labelVideoPos->setText("No video");
+  setWindowTitle("csImgTracker");
   ui->widgetControls->setEnabled(false);
   ui->widgetCopySave->setEnabled(false);
-  ui->plainTextEditVideoInfo->setPlainText("No Video");
+  ui->labelVideoInfo->setTextFormat(Qt::PlainText);
+  ui->labelVideoInfo->setText("No video loaded");
 
   ui->treeWidget->clear();
 
@@ -149,9 +187,9 @@ void Window::okVideoUpdate() {
 
   if (ui->horizontalSlider->maximum() > 0) {
     ui->pushButtonPlay->setEnabled(true);
-    ui->horizontalSlider->setEnabled(true);
+    setSeekEnabled(true);
   } else {
-    ui->horizontalSlider->setEnabled(false);
+    setSeekEnabled(false);
     ui->pushButtonPlay->setEnabled(false);
   }
 
@@ -160,14 +198,23 @@ void Window::okVideoUpdate() {
   ui->labelVideoPos->setText("");
   ui->widgetControls->setEnabled(true);
   ui->widgetCopySave->setEnabled(true);
-  ui->plainTextEditVideoInfo->setPlainText(QString("Image width: %1 px\n"
-                                                   "Image height: %2 px\n"
-                                                   "Num frames: %3\n"
-                                                   "FPS: %4 1/s\n")
-                                               .arg(videoInfo.width)
-                                               .arg(videoInfo.height)
-                                               .arg(videoInfo.numFrames)
-                                               .arg(videoInfo.fps));
+  const QLocale locale;
+  QString duration = "-";
+  if (videoInfo.fps > 0) {
+    duration =
+        locale.toString(videoInfo.numFrames / videoInfo.fps, 'f', 1) + " s";
+  }
+  ui->labelVideoInfo->setTextFormat(Qt::RichText);
+  ui->labelVideoInfo->setText(QString("<b>%1</b><br>"
+                                      "%2 &times; %3 px<br>"
+                                      "%4 frames, %5 fps<br>"
+                                      "Duration: %6")
+                                  .arg(_videoName.toHtmlEscaped())
+                                  .arg(videoInfo.width)
+                                  .arg(videoInfo.height)
+                                  .arg(videoInfo.numFrames)
+                                  .arg(locale.toString(videoInfo.fps, 'g', 4))
+                                  .arg(duration));
 }
 
 // The folder the open dialog starts in: the sample video of the deployment
@@ -209,6 +256,9 @@ void Window::on_pushButtonOpen_clicked() {
     video.swap(newVideo);
 
     resetNoVideoData();
+
+    _videoName = QFileInfo(filename).fileName();
+    setWindowTitle(_videoName + " - csImgTracker");
 
     videoInfo.width = video->get(cv::CAP_PROP_FRAME_WIDTH);
     videoInfo.height = video->get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -369,8 +419,9 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   _curimg = _curimg.convertedTo(QImage::Format::Format_RGB32);
 
   ui->labelVideoPos->setText(
-      QString("#%1 - %2s")
+      QString("Frame %1 / %2     %3 s")
           .arg(_curFrame + 1)
+          .arg(videoInfo.numFrames)
           .arg(QLocale().toString(_curMsec / 1000, 'f', 3)));
 
   ui->preview->makeCurrent();
@@ -407,7 +458,7 @@ void Window::on_horizontalSlider_valueChanged(int n) {
     } else {
       ui->pushButtonPlay->setChecked(false);
       ui->horizontalSlider->setValue(0);
-      ui->horizontalSlider->setEnabled(true);
+      setSeekEnabled(true);
       ui->pushButtonOpen->setEnabled(true);
     }
   }
@@ -546,11 +597,11 @@ void Window::on_pushButtonFit_clicked() {
 void Window::on_pushButtonPlay_clicked() {
 
   if (ui->pushButtonPlay->isChecked()) {
-    ui->horizontalSlider->setEnabled(false);
+    setSeekEnabled(false);
     ui->pushButtonOpen->setEnabled(false);
     on_horizontalSlider_valueChanged(ui->horizontalSlider->value());
   } else {
-    ui->horizontalSlider->setEnabled(true);
+    setSeekEnabled(true);
     ui->pushButtonOpen->setEnabled(true);
   }
 }
@@ -629,4 +680,24 @@ void Window::on_pushButtonDeleteSelected_clicked() {
 
   // update visualizer
   vis->showPoints(_pointsPerFrame[_curFrame].points);
+}
+
+void Window::setSeekEnabled(bool enabled) {
+  ui->horizontalSlider->setEnabled(enabled);
+  ui->pushButtonPrev->setEnabled(enabled);
+  ui->pushButtonNext->setEnabled(enabled);
+}
+
+void Window::updatePlayButton(bool playing) {
+  ui->pushButtonPlay->setIcon(style()->standardIcon(
+      playing ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay));
+  ui->pushButtonPlay->setText(playing ? "Pause" : "Play");
+}
+
+void Window::on_pushButtonPrev_clicked() {
+  ui->horizontalSlider->setValue(ui->horizontalSlider->value() - 1);
+}
+
+void Window::on_pushButtonNext_clicked() {
+  ui->horizontalSlider->setValue(ui->horizontalSlider->value() + 1);
 }

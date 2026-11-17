@@ -38,6 +38,8 @@ cs_target_sources(csImgTracker
   Common.cpp
   CvMatAndQImage.h
   CvMatAndQImage.cpp
+  Style.h
+  Style.cpp
 	Visualizer.h
 	Visualizer.cpp
 	TreeWidgetItem.h

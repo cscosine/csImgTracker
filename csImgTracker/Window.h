@@ -30,6 +30,7 @@ class Window : public QMainWindow {
 
   std::unique_ptr<cv::VideoCapture> video;
   VideoInfo videoInfo;
+  QString _videoName;
   std::map<int, TimestampAndPoints> _pointsPerFrame;
   std::map<int, QTreeWidgetItem *> _itemRootPerFrame;
 
@@ -46,6 +47,8 @@ class Window : public QMainWindow {
   void okVideoUpdate();
 
   void updateRotateCoord();
+  void setSeekEnabled(bool enabled);
+  void updatePlayButton(bool playing);
 
   QString trackedPoint2Text();
   Eigen::Vector2f toImageCoord(Eigen::Vector2f world);
@@ -67,6 +70,8 @@ public slots:
   void on_pushButtonFit_clicked();
 
   void on_pushButtonPlay_clicked();
+  void on_pushButtonPrev_clicked();
+  void on_pushButtonNext_clicked();
 
   void on_pushButtonCopy_clicked();
   void on_pushButtonSave_clicked();

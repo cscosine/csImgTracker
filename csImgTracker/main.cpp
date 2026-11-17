@@ -1,3 +1,4 @@
+#include "Style.h"
 #include "Window.h"
 #include <QApplication>
 #include <QMessageBox>
@@ -37,6 +38,8 @@ int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(vis);
 
   QApplication app(argc, argv);
+  QApplication::setApplicationName("csImgTracker");
+  applyAppStyle(app);
 
   Window window(nullptr);
   if (QApplication::arguments().contains("--smoke")) {
