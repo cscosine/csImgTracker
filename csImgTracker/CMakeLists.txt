@@ -38,6 +38,8 @@ cs_find_package(csImgTracker PUBLIC Qt6 COMPONENTS Widgets REQUIRED CONFIG)
 
 cs_target_sources(csImgTracker
 	PRIVATE
+  AboutDialog.h
+  AboutDialog.cpp
   Common.h
   Common.cpp
   CvMatAndQImage.h
@@ -59,6 +61,9 @@ cs_target_sources(csImgTracker PRIVATE icon/icon.qrc)
 if(WIN32)
   cs_target_sources(csImgTracker PRIVATE icon/csImgTracker.rc)
 endif()
+
+# the version of the application (About, QCoreApplication::applicationVersion): the version of the top project
+target_compile_definitions(csImgTracker PRIVATE CSIMGTRACKER_VERSION="${CMAKE_PROJECT_VERSION}")
 
 set_target_properties(csImgTracker PROPERTIES AUTOMOC ON)
 set_target_properties(csImgTracker PROPERTIES AUTOUIC ON)

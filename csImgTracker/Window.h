@@ -84,6 +84,7 @@ public slots:
   void on_pushButtonSave_clicked();
 
   void on_pushButtonOpen_clicked();
+  void on_pushButtonAbout_clicked();
 
   void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
   void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);

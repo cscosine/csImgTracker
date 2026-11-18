@@ -28,6 +28,7 @@
 #include <QStyle>
 #include <QTreeWidgetItem>
 
+#include "AboutDialog.h"
 #include "CvMatAndQImage.h"
 
 #include <iostream>
@@ -831,4 +832,9 @@ void Window::on_pushButtonPrev_clicked() {
 
 void Window::on_pushButtonNext_clicked() {
   ui->horizontalSlider->setValue(ui->horizontalSlider->value() + 1);
+}
+
+void Window::on_pushButtonAbout_clicked() {
+  AboutDialog dialog(this);
+  dialog.exec();
 }

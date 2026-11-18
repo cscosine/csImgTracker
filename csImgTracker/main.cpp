@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
 
   QApplication app(argc, argv);
   QApplication::setApplicationName("csImgTracker");
+  QApplication::setApplicationVersion(CSIMGTRACKER_VERSION);
   applyAppStyle(app);
 
   // the icon of the windows (title bar, taskbar, macOS Dock), all its sizes

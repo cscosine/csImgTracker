@@ -281,6 +281,19 @@
           </column>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonAbout">
+          <property name="text">
+           <string>About csImgTracker</string>
+          </property>
+          <property name="toolTip">
+           <string>The project, its version, the components it is built with and their licenses</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>

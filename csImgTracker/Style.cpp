@@ -114,6 +114,18 @@ QPushButton[accent="true"]:disabled {
   border-color: #93c5fd;
 }
 
+/* flat buttons (About): a link */
+QPushButton:flat {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  padding: 4px 0;
+}
+QPushButton:flat:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
 QPushButton[transport="true"] {
   padding: 6px 10px;
   min-width: 20px;
