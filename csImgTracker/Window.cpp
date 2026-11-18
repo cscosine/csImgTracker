@@ -400,8 +400,9 @@ QString Window::trackedPoint2Text() {
   for (const auto &f : this->_pointsPerFrame) {
     for (const auto &v : f.second.points) {
       auto ic = toImageCoord(v);
+      // the frame number as in the list and the transport bar (from 1)
       ret += QString("%1 %2 %3 %4\n")
-                 .arg(f.first)
+                 .arg(f.first + 1)
                  .arg(QLocale().toString(f.second.timestamp, 'f', 3))
                  .arg(int(ic.x()))
                  .arg(int(ic.y()));
