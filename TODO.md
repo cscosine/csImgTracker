@@ -1,25 +1,17 @@
 # TODO
 
-## Windows: no console window for the users (to evaluate)
+## Windows: a GUI application in Release, at csCMake level
 
-Today `csImgTracker.exe` is a console application: started from the deployment (double-click), Windows opens a console
-window next to the application.
+`csImgTracker.exe` is a GUI application in Release (no console window next to it, `WIN32_EXECUTABLE
+$<CONFIG:Release>` in `csImgTracker/CMakeLists.txt`) and a console application in the other configurations. The
+deployments and the release archives are Release; the smoke run in CI is unaffected (started by Python
+`subprocess.run`, it waits for the process and reads its output through the inherited pipes).
 
-Preferred (to evaluate): a GUI application in **Release only**, a console application in the other configurations:
-
-```cmake
-set_target_properties(csImgTracker PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
-```
-
-- The deployments and the release archives are Release: what the users download has no console; Debug /
-  RelWithDebInfo keep the console in development. No switch in CI: the configuration decides.
-- Qt adds the entry point (`Qt6::EntryPoint`: `WinMain` calls `main()`), no code change.
-- To check: the smoke run in CI (`--smoke`: the output through the pipes of CI, the exit code to the parent);
-  `--smoke` started by hand from a terminal on a Release build prints nothing unless the application attaches to the
-  console of its parent (`AttachConsole(ATTACH_PARENT_PROCESS)` at start, a few lines), and the terminal does not wait
-  for a GUI application.
-- If it fits, the same for skiTrackerApp and the csVisOpenGL sample; then a `GUI` keyword of csCMake
-  `cs_add_executable` instead of the line in every project.
+- Move it to csCMake: a `GUI` keyword of `cs_add_executable` (Release only) instead of the line in every project; then
+  the same for skiTrackerApp and the csVisOpenGL sample.
+- `--smoke` started by hand from a terminal on a Release build prints nothing (no console attached) and the terminal
+  does not wait for a GUI application: if needed, the application attaches to the console of its parent
+  (`AttachConsole(ATTACH_PARENT_PROCESS)` at start, when its standard output is not redirected).
 
 Alternatives considered (2026-11-17):
 

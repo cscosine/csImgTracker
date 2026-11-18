@@ -20,6 +20,10 @@ list(POP_BACK CMAKE_MODULE_PATH)
 # prepare standard library
 cs_add_executable(csImgTracker)
 cs_add_executable(csImgTracker::csImgTracker ALIAS csImgTracker)
+# Windows: a GUI application in Release (no console window next to it; the deployments and the release archives are
+# Release), a console application in the other configurations (the console for development). Qt adds the entry point
+# (Qt6::EntryPoint, WinMain calling main).
+set_target_properties(csImgTracker PROPERTIES WIN32_EXECUTABLE $<CONFIG:Release>)
 
 cs_find_package(csImgTracker PUBLIC Eigen3 REQUIRED CONFIG)
 cs_find_package(csImgTracker PUBLIC csCore COMPONENTS core eigenUtils REQUIRED CONFIG)
