@@ -45,14 +45,14 @@ jobs:
         )
 
         input_folder_base = Path('.')
-        input_manifest_path_variant = [(Path('csImgTracker-0.2.0-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvc-default-msvc2022/csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvc-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2022'), (Path('csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvc-default-msvc2026/csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvc-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2026'), (Path('csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022/csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2022'), (Path('csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026/csImgTracker-0.2.0-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2026'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.0-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.0-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.0-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-macos-macos15-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.0-csv1-macos-macos15-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-xcode'), (Path('csImgTracker-0.2.0-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.0-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.0-csv1-macos-macos26-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.0-csv1-macos-macos26-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-xcode')]
-        output_manifest_filename = Path('csImgTracker-0.2.0.csOrchestratorManifest')
+        input_manifest_path_variant = [(Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2022/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2022'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2026/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2026'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2022'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2026'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-xcode'), (Path('csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-xcode')]
+        output_manifest_filename = Path('csImgTracker-0.2.1.csOrchestratorManifest')
         project_name = 'csImgTracker'
-        project_version = '0.2.0'
+        project_version = '0.2.1'
         base_path_additional_files = Path(os.environ["GITHUB_WORKSPACE"])
         list_additional_files = []
         output_folder_additional_files = Path(os.environ["GITHUB_WORKSPACE"]) / Path('generated-for-release')
-        output_bundle_file_name = Path('csImgTracker-0.2.0-bundle.tar.gz')
+        output_bundle_file_name = Path('csImgTracker-0.2.1-bundle.tar.gz')
         repo_publish_config_dict = {}
         header_only_variants_sources = {'csv1-linux': 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig', 'csv1-windows': 'csv1-windows-v10-x64-generic-msvc-default-msvc2022', 'csv1-macos': 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'}
         dependencies = {}
@@ -86,9 +86,9 @@ jobs:
     - name: Upload manifest as artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.0.csOrchestratorManifest
+        name: csImgTracker-0.2.1.csOrchestratorManifest
         path: |-
-          generated-for-release/csImgTracker-0.2.0.csOrchestratorManifest
+          generated-for-release/csImgTracker-0.2.1.csOrchestratorManifest
         overwrite: true
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v3
@@ -96,7 +96,7 @@ jobs:
         files: |-
           artifacts/**/*.tar.gz
           artifacts/**/*.zip
-          generated-for-release/csImgTracker-0.2.0.csOrchestratorManifest
+          generated-for-release/csImgTracker-0.2.1.csOrchestratorManifest
       if: ${{ github.ref_type == 'tag' }}
   orchestrator-matrix:
     runs-on: ${{ matrix.runner }}
@@ -829,8 +829,8 @@ jobs:
         install_subdir = Path('csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}')
         variant_string = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         project_name = 'csImgTracker'
-        project_version = '0.2.0'
-        output_file = Path('workspace/install/csImgTracker-0.2.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
+        project_version = '0.2.1'
+        output_file = Path('workspace/install/csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
 
         errors_list = get_package_versions_and_write_single_variant_manifest(
             repos_config_file_list=repos_config_file_list,
@@ -861,8 +861,8 @@ jobs:
             load_release_manifest_single_variant_and_prepare_archive,
         )
 
-        input_full_path = Path('workspace/install/csImgTracker-0.2.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
-        project_name_and_version = 'csImgTracker-0.2.0'
+        input_full_path = Path('workspace/install/csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
+        project_name_and_version = 'csImgTracker-0.2.1'
         context_os_architecture_compiler_generator_string = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         input_base_dir = Path('workspace/install')
 
@@ -883,7 +883,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
+        name: csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
         path: |-
           workspace/install/*.tar.gz
           workspace/install/*.csOrchestratorManifest
@@ -899,7 +899,7 @@ jobs:
         build_dir = Path('workspace/build/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}')
         build_config = 'debug-release-relWithDebInfo-paranoid'
         project_name = 'csImgTracker'
-        project_name_and_version = 'csImgTracker-0.2.0'
+        project_name_and_version = 'csImgTracker-0.2.1'
         variant = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         output_dir = Path('workspace/deploy-archives')
 
@@ -922,7 +922,7 @@ jobs:
     - name: 'Create Deployment Archives: upload'
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}-deployments
+        name: csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}-deployments
         path: |-
           workspace/deploy-archives/*.tar.gz
           workspace/deploy-archives/*.zip
@@ -979,7 +979,7 @@ jobs:
         deployment = 'app'
         archives_dir = Path('workspace/deploy-archives')
         project_name = 'csImgTracker'
-        project_name_and_version = 'csImgTracker-0.2.0'
+        project_name_and_version = 'csImgTracker-0.2.1'
         variant = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         commands = {'linux': ['sh', '-c', 'if command -v xvfb-run >/dev/null; then exec xvfb-run -a "$@"; else exec "$@"; fi', 'sh', '{folder}/bin/csImgTracker', '--smoke'], 'windows': ['{folder}/bin/csImgTracker.exe', '--smoke'], 'macos': ['{folder}/bin/csImgTracker', '--smoke']}
         clean_environment = True

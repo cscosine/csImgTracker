@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.31)
 include(csCMakeSetup)
 cs_macos_deployment_target(14.4)
 
-project(csImgTrackerSol VERSION 0.2.0 LANGUAGES CXX)
+project(csImgTrackerSol VERSION 0.2.1 LANGUAGES CXX)
 
 # add the csCMake system
 include(csCMake)
