@@ -45,13 +45,13 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
 
     o = create_orchestrator_factory_all_supported_cases(
         name="csImgTracker",
-        version="0.1.0",
+        version="0.2.0",
         execution_matrix_name="orchestrator-matrix",
     )
 
     o = create_default_orchestrator(
         name="csImgTracker",
-        version="0.1.0",
+        version="0.2.0",
         base_install_dir=base_install_dir,
         # opt-in variants: Ubuntu 26.04 (as 22.04/24.04), macOS 15/26 (Ninja Multi-Config, Xcode)
         additional_matrix_list=(
