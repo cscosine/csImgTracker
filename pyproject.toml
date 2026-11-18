@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "csImgTracker"
-version = "0.2.0"
+version = "0.2.1"
 description = "csImgTracker"
 authors = [
   { name = "cscosine-dev", email = "cscosine@gmail.com" }
