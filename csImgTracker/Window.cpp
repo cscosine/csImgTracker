@@ -14,12 +14,15 @@
 
 #include "TreeWidgetItem.h"
 
+#include <QApplication>
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QKeyEvent>
 #include <QKeySequence>
 #include <QMessageBox>
+#include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
 #include <QStyle>
@@ -30,6 +33,11 @@
 #include <iostream>
 
 #include <QTimer>
+
+namespace {
+// the column of the points list with the delete icon
+constexpr int kDeleteColumn = 4;
+} // namespace
 
 Window::Window(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::Window()),
@@ -68,8 +76,9 @@ Window::Window(QWidget *parent)
   // m_cameraController->setMaxScale(4.0);
   m_cameraController->setZNearFar(-1, 1);
 
-  ui->treeWidget->setColumnCount(4);
-  ui->treeWidget->setHeaderLabels({"Frame", "Time [s]", "X [px]", "Y [px]"});
+  ui->treeWidget->setColumnCount(5);
+  ui->treeWidget->setHeaderLabels(
+      {"Frame", "Time [s]", "X [px]", "Y [px]", ""});
   ui->treeWidget->header()->setStretchLastSection(false);
   ui->treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   ui->treeWidget->setExpandsOnDoubleClick(false);
@@ -97,7 +106,11 @@ Window::Window(QWidget *parent)
   // keyboard shortcuts (also written in the tooltips)
   ui->pushButtonOpen->setShortcut(QKeySequence::Open);
   ui->pushButtonSave->setShortcut(QKeySequence::Save);
-  ui->pushButtonDeleteSelected->setShortcut(QKeySequence::Delete);
+  // Del in the points list: delete the selected point or frame
+  auto *deleteShortcut = new QShortcut(QKeySequence::Delete, ui->treeWidget);
+  deleteShortcut->setContext(Qt::WidgetWithChildrenShortcut);
+  QObject::connect(deleteShortcut, &QShortcut::activated, this,
+                   [this] { deleteItem(ui->treeWidget->currentItem()); });
   ui->pushButtonPlay->setShortcut(QKeySequence(Qt::Key_Space));
   ui->pushButtonPrev->setShortcut(QKeySequence(Qt::Key_Left));
   ui->pushButtonNext->setShortcut(QKeySequence(Qt::Key_Right));
@@ -112,7 +125,17 @@ Window::Window(QWidget *parent)
                      .arg(QChar(0x2192))));
   ui->statusbar->setSizeGripEnabled(false);
 
+  // Space plays / pauses wherever the focus is in this window, the points
+  // list keeps its arrow keys (eventFilter)
+  qApp->installEventFilter(this);
+
   ui->preview->setCursor(Qt::CrossCursor);
+  // The image view takes no keyboard focus: zoom and pan are by mouse (wheel
+  // and drag work without focus), the keys go to the shortcuts of the window.
+  // With the focus, the camera controller moves while it believes a key held
+  // (W/S/A/D, arrows), and a key release lost to a dialog or a shortcut left
+  // it zooming without end.
+  ui->preview->setFocusPolicy(Qt::NoFocus);
 
   QObject::connect(&ui->preview->getFrameSignals(),
                    &csVisOpenGL::FrameSignals::mouseDoubleClick, this,
@@ -138,12 +161,50 @@ void Window::updateRotateCoord() {
 }
 
 void Window::closeEvent(QCloseEvent *e) {
-  auto res =
-      QMessageBox::question(this, "Quit?", "Do you really want to close?",
-                            QMessageBox::Yes | QMessageBox::No);
+  if (_pointsPerFrame.empty()) {
+    return;
+  }
+  auto res = QMessageBox::question(
+      this, "Quit?",
+      QString("Close csImgTracker? The %1 tracked point(s) are lost if not "
+              "saved.")
+          .arg(countPoints()),
+      QMessageBox::Yes | QMessageBox::No);
   if (res != QMessageBox::Yes) {
     e->ignore();
   }
+}
+
+// Before a shortcut, Qt lets the focused widget claim the key
+// (ShortcutOverride): Space always goes to the play / pause shortcut, the
+// arrows stay with the points list when it has the focus (to open and close
+// the frames). Only for the widgets of this window, not for its dialogs.
+bool Window::eventFilter(QObject *obj, QEvent *e) {
+  if (e->type() == QEvent::ShortcutOverride) {
+    auto *w = qobject_cast<QWidget *>(obj);
+    auto *ke = static_cast<QKeyEvent *>(e);
+    if (w != nullptr && w->window() == this &&
+        ke->modifiers() == Qt::NoModifier) {
+      if (ke->key() == Qt::Key_Space) {
+        e->ignore(); // not claimed: the shortcut runs
+        return true;
+      }
+      if ((ke->key() == Qt::Key_Left || ke->key() == Qt::Key_Right) &&
+          (w == ui->treeWidget || ui->treeWidget->isAncestorOf(w))) {
+        e->accept(); // claimed: the points list gets the key
+        return true;
+      }
+    }
+  }
+  return QMainWindow::eventFilter(obj, e);
+}
+
+int Window::countPoints() const {
+  int n = 0;
+  for (const auto &f : _pointsPerFrame) {
+    n += static_cast<int>(f.second.points.size());
+  }
+  return n;
 }
 
 void Window::resetNoVideoData() {
@@ -153,6 +214,8 @@ void Window::resetNoVideoData() {
   _first = true;
   _rotated = 0;
   _pointsPerFrame.clear();
+  // the items are deleted with the tree (noVideoUpdate, okVideoUpdate)
+  _itemRootPerFrame.clear();
 }
 
 void Window::noVideoUpdate() {
@@ -198,6 +261,10 @@ void Window::okVideoUpdate() {
   ui->labelVideoPos->setText("");
   ui->widgetControls->setEnabled(true);
   ui->widgetCopySave->setEnabled(true);
+  updateVideoInfoCard();
+}
+
+void Window::updateVideoInfoCard() {
   const QLocale locale;
   QString duration = "-";
   if (videoInfo.fps > 0) {
@@ -231,6 +298,18 @@ static QString defaultVideoDir() {
 }
 
 void Window::on_pushButtonOpen_clicked() {
+  if (!_pointsPerFrame.empty()) {
+    auto res = QMessageBox::question(
+        this, "Open another video?",
+        QString("Opening another video discards the %1 tracked point(s) of "
+                "this one, if not saved. Continue?")
+            .arg(countPoints()),
+        QMessageBox::Yes | QMessageBox::No);
+    if (res != QMessageBox::Yes) {
+      return;
+    }
+  }
+
   // open the new video
   QString selFilter = "Video File (*.mp4 *.avi *.mkv)";
   QString filter = selFilter + ";; all files (*.*)";
@@ -264,7 +343,7 @@ void Window::on_pushButtonOpen_clicked() {
     videoInfo.height = video->get(cv::CAP_PROP_FRAME_HEIGHT);
     videoInfo.fps = video->get(cv::CAP_PROP_FPS);
     videoInfo.numFrames = video->get(cv::CAP_PROP_FRAME_COUNT);
-    if (videoInfo.numFrames < 0) {
+    if (videoInfo.numFrames <= 0) {
       videoInfo.numFrames = 1;
     }
 
@@ -366,57 +445,60 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   if (video == nullptr)
     return; // defensive
 
+  // the frame shown now (-1: none yet), to stay on it after an error
+  const int shownFrame = _curimg.isNull() ? -1 : _curFrame;
+
   _curFrame = int(video->get(cv::CAP_PROP_POS_FRAMES));
   if (_curFrame != n) {
     bool b = video->set(cv::CAP_PROP_POS_FRAMES, n);
     if (!b) {
-      QMessageBox::critical(
-          this, "Error",
-          QString("Error in video seek while moving to frame %1")
-              .arg(_curFrame));
-      resetNoVideoData();
-      noVideoUpdate();
+      frameError(QString("Error in video seek to frame %1").arg(n + 1),
+                 shownFrame);
       return;
     }
 
     _curFrame = video->get(cv::CAP_PROP_POS_FRAMES);
     if (_curFrame != n) {
-      QMessageBox::critical(
-          this, "Error",
-          QString("Error in video seek after moving to frame %1")
-              .arg(_curFrame));
-      resetNoVideoData();
-      noVideoUpdate();
+      frameError(QString("Error in video seek to frame %1 (at frame %2)")
+                     .arg(n + 1)
+                     .arg(_curFrame + 1),
+                 shownFrame);
       return;
     }
   }
 
-  _curMsec = video->get(cv::CAP_PROP_POS_MSEC);
+  const double msec = video->get(cv::CAP_PROP_POS_MSEC);
 
   cv::Mat frame;
   *video >> frame; // get a new frame from camera
 
+  if (frame.empty() && n > 0) {
+    // the frame count of a video is an estimate: the video ends before frame
+    // n, the last frame is n - 1 (setMaximum moves the slider there, showing
+    // that frame, and stops a playback); the tracked points are kept
+    videoInfo.numFrames = n;
+    updateVideoInfoCard();
+    _curFrame = shownFrame;
+    ui->horizontalSlider->setMaximum(n - 1);
+    return;
+  }
+
   if (frame.empty()) {
-    QMessageBox::critical(
-        this, "Error",
-        QString("Error in video acquisition of frame %1").arg(_curFrame));
-    resetNoVideoData();
-    noVideoUpdate();
+    frameError(QString("Error in video acquisition of frame %1").arg(n + 1),
+               shownFrame);
     return;
   }
 
-  _curimg = mat2Image(frame);
+  QImage img = mat2Image(frame);
 
-  if (_curimg.isNull()) {
-    QMessageBox::critical(
-        this, "Error",
-        QString("Error converting frame %1 to image").arg(_curFrame));
-    resetNoVideoData();
-    noVideoUpdate();
+  if (img.isNull()) {
+    frameError(QString("Error converting frame %1 to image").arg(n + 1),
+               shownFrame);
     return;
   }
 
-  _curimg = _curimg.convertedTo(QImage::Format::Format_RGB32);
+  _curimg = img.convertedTo(QImage::Format::Format_RGB32);
+  _curMsec = msec;
 
   ui->labelVideoPos->setText(
       QString("Frame %1 / %2     %3 s")
@@ -456,12 +538,35 @@ void Window::on_horizontalSlider_valueChanged(int n) {
         }
       });
     } else {
-      ui->pushButtonPlay->setChecked(false);
-      ui->horizontalSlider->setValue(0);
-      setSeekEnabled(true);
-      ui->pushButtonOpen->setEnabled(true);
+      // end of the video: stop on the last frame
+      stopPlayback();
     }
   }
+}
+
+void Window::stopPlayback() {
+  ui->pushButtonPlay->setChecked(false);
+  setSeekEnabled(true);
+  ui->pushButtonOpen->setEnabled(true);
+}
+
+// A frame cannot be shown: with a frame shown, stay on it (the video and the
+// tracked points are kept); without, the video is closed.
+void Window::frameError(const QString &message, int shownFrame) {
+  if (shownFrame < 0) {
+    QMessageBox::critical(this, "Error", message);
+    resetNoVideoData();
+    noVideoUpdate();
+    return;
+  }
+  if (ui->pushButtonPlay->isChecked()) {
+    stopPlayback();
+  }
+  _curFrame = shownFrame;
+  ui->horizontalSlider->blockSignals(true);
+  ui->horizontalSlider->setValue(shownFrame);
+  ui->horizontalSlider->blockSignals(false);
+  QMessageBox::critical(this, "Error", message);
 }
 
 void Window::on_pushButtonRotateLeft_clicked() {
@@ -475,6 +580,7 @@ void Window::on_pushButtonRotateLeft_clicked() {
   m_cameraController->setYpr(ypr, true);
 
   updateRotateCoord();
+  on_pushButtonFit_clicked();
 }
 
 void Window::on_pushButtonRotateRight_clicked() {
@@ -489,13 +595,17 @@ void Window::on_pushButtonRotateRight_clicked() {
   m_cameraController->setYpr(ypr, true);
 
   updateRotateCoord();
+  on_pushButtonFit_clicked();
 }
 
 void Window::on_imgDoubleClick(QMouseEvent &e) {
   if (_curimg.isNull())
     return;
-  if (ui->pushButtonPlay->isChecked())
+  if (ui->pushButtonPlay->isChecked()) {
+    // during the playback a double-click stops it (no point added)
+    stopPlayback();
     return;
+  }
 
   // Get clicking position in OpenGL screen coordinates ([-1, 1], [-1, 1])
   const auto &camera = ui->preview->getCamera();
@@ -523,6 +633,20 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
   if (world2DCoords.x() > +ir)
     return;
 
+  // a point of this frame at the same pixel (the displayed integer image
+  // coordinates) already exists: nothing to add
+  const auto imgCoord = toImageCoord(world2DCoords);
+  if (const auto it = _pointsPerFrame.find(_curFrame);
+      it != _pointsPerFrame.end()) {
+    for (const auto &p : it->second.points) {
+      const auto ic = toImageCoord(p);
+      if (int(ic.x()) == int(imgCoord.x()) &&
+          int(ic.y()) == int(imgCoord.y())) {
+        return;
+      }
+    }
+  }
+
   _pointsPerFrame[_curFrame].points.push_back(world2DCoords);
   if (_pointsPerFrame[_curFrame].points.size() == 1) {
     _pointsPerFrame[_curFrame].timestamp = _curMsec / 1000;
@@ -533,6 +657,7 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
     treeItem->setData(0, Qt::UserRole + 1, -1);
     treeItem->setText(1, QLocale().toString(_curMsec / 1000, 'f', 3));
     treeItem->setExpanded(true);
+    setDeleteIcon(treeItem, "Delete all the points of this frame");
     _itemRootPerFrame[_curFrame] = treeItem;
   }
   // add this element
@@ -542,10 +667,9 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
       0, Qt::UserRole + 1,
       static_cast<int>(_pointsPerFrame[_curFrame].points.size()) - 1);
 
-  auto imgCoord = toImageCoord(world2DCoords);
-
   childItem->setText(2, QString("%1").arg(int(imgCoord.x())));
   childItem->setText(3, QString("%1").arg(int(imgCoord.y())));
+  setDeleteIcon(childItem, "Delete this point");
   _itemRootPerFrame[_curFrame]->addChild(childItem);
 
   // update visualization
@@ -557,40 +681,18 @@ void Window::on_pushButtonFit_clicked() {
     return;
   const auto &camera = ui->preview->getCamera();
 
+  // The image is [-ir, ir] x [-1, 1] in world coordinates; the view shows
+  // [-scale * sr, scale * sr] x [-scale, scale]. Rotated by 90 degrees the
+  // image is [-1, 1] x [-ir, ir] on screen. The fit is the smallest scale
+  // showing the whole image.
   auto viewSize = camera.getViewSize();
   float sr = float(viewSize.x()) / float(viewSize.y());
-  float ir = 1.0f;
-  if (_rotated % 2 == 0) {
-    ir = float(_curimg.width()) / float(_curimg.height());
-    if (ir > sr) {
-      float scale = ir / sr;
-      m_cameraController->setScale(scale, false);
-      m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
-    } else {
-      m_cameraController->setScale(1.0, false);
-      m_cameraController->setScaleLimits(0.25f, 4.0f);
-    }
-  } else {
-    ir = float(_curimg.width()) / float(_curimg.height());
-    float scale1;
-    if (ir > 1) {
-      scale1 = ir;
-    } else {
-      scale1 = 1 / ir;
-    }
+  float ir = float(_curimg.width()) / float(_curimg.height());
+  float scale =
+      (_rotated % 2 == 0) ? std::max(1.0f, ir / sr) : std::max(ir, 1.0f / sr);
 
-    float scale2;
-    if (sr > 1) {
-      scale2 = 1;
-    } else {
-      scale2 = 1 / sr;
-    }
-
-    float scale = std::max(scale1, scale2);
-
-    m_cameraController->setScale(scale, false);
-    m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
-  }
+  m_cameraController->setScale(scale, false);
+  m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
   m_cameraController->setPivotPosition(Eigen::Vector3f::Zero(), false);
 }
 
@@ -599,7 +701,13 @@ void Window::on_pushButtonPlay_clicked() {
   if (ui->pushButtonPlay->isChecked()) {
     setSeekEnabled(false);
     ui->pushButtonOpen->setEnabled(false);
-    on_horizontalSlider_valueChanged(ui->horizontalSlider->value());
+    if (ui->horizontalSlider->value() == ui->horizontalSlider->maximum()) {
+      // stopped on the last frame: play again from the start (setValue shows
+      // frame 0 and continues the playback)
+      ui->horizontalSlider->setValue(0);
+    } else {
+      on_horizontalSlider_valueChanged(ui->horizontalSlider->value());
+    }
   } else {
     setSeekEnabled(true);
     ui->pushButtonOpen->setEnabled(true);
@@ -608,12 +716,29 @@ void Window::on_pushButtonPlay_clicked() {
 
 void Window::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item,
                                              int column) {
+  if (ui->pushButtonPlay->isChecked())
+    return;
   int curFrame = item->data(0, Qt::UserRole).toInt();
   ui->horizontalSlider->setValue(curFrame);
 }
 
-void Window::on_pushButtonDeleteSelected_clicked() {
-  auto item = ui->treeWidget->currentItem();
+// the delete icon of a row of the points list: delete that point or frame
+void Window::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column) {
+  if (column == kDeleteColumn) {
+    deleteItem(item);
+  }
+}
+
+void Window::setDeleteIcon(QTreeWidgetItem *item, const QString &toolTip) {
+  item->setIcon(kDeleteColumn, style()->standardIcon(QStyle::SP_TrashIcon));
+  item->setToolTip(kDeleteColumn, toolTip);
+}
+
+// Delete a point (a child row) or all the points of a frame (a frame row),
+// asking first when it is not the current frame or it is a whole frame.
+void Window::deleteItem(QTreeWidgetItem *item) {
+  if (ui->pushButtonPlay->isChecked())
+    return;
   if (item == nullptr)
     return;
   int curFrame = item->data(0, Qt::UserRole).toInt();
@@ -679,7 +804,12 @@ void Window::on_pushButtonDeleteSelected_clicked() {
   }
 
   // update visualizer
-  vis->showPoints(_pointsPerFrame[_curFrame].points);
+  if (const auto it = _pointsPerFrame.find(_curFrame);
+      it != _pointsPerFrame.end()) {
+    vis->showPoints(it->second.points);
+  } else {
+    vis->showPoints({});
+  }
 }
 
 void Window::setSeekEnabled(bool enabled) {

@@ -207,9 +207,50 @@
          </widget>
         </item>
         <item>
+         <widget class="QWidget" name="widgetCopySave" native="true">
+          <layout class="QVBoxLayout" name="verticalLayoutCopySave">
+           <property name="spacing">
+            <number>6</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="pushButtonCopy">
+             <property name="text">
+              <string>Copy all points to the clipboard</string>
+             </property>
+             <property name="toolTip">
+              <string>Copy all the points to the clipboard, ready to paste in a spreadsheet</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonSave">
+             <property name="text">
+              <string>Save all points to a file…</string>
+             </property>
+             <property name="toolTip">
+              <string>Save all the points to a text file (Ctrl+S)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="labelHint">
           <property name="text">
-           <string>Double-click on the image to mark a point. Double-click a row to jump to its frame.</string>
+           <string>Double-click on the image to mark a point. Double-click a row to jump to its frame, the trash icon (or Del) deletes it.</string>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
@@ -238,60 +279,6 @@
             <string notr="true">1</string>
            </property>
           </column>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButtonDeleteSelected">
-          <property name="text">
-           <string>Delete selected</string>
-          </property>
-          <property name="toolTip">
-           <string>Delete the selected point, or all the points of the selected frame (Del)</string>
-          </property>
-          <property name="danger" stdset="0">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QWidget" name="widgetCopySave" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayoutCopySave">
-           <property name="spacing">
-            <number>6</number>
-           </property>
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="pushButtonCopy">
-             <property name="text">
-              <string>Copy</string>
-             </property>
-             <property name="toolTip">
-              <string>Copy all the points to the clipboard, ready to paste in a spreadsheet</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButtonSave">
-             <property name="text">
-              <string>Save…</string>
-             </property>
-             <property name="toolTip">
-              <string>Save all the points to a text file (Ctrl+S)</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
          </widget>
         </item>
        </layout>

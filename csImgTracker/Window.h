@@ -49,11 +49,18 @@ class Window : public QMainWindow {
   void updateRotateCoord();
   void setSeekEnabled(bool enabled);
   void updatePlayButton(bool playing);
+  void updateVideoInfoCard();
+  void stopPlayback();
+  void frameError(const QString &message, int shownFrame);
+  void setDeleteIcon(QTreeWidgetItem *item, const QString &toolTip);
+  void deleteItem(QTreeWidgetItem *item);
+  int countPoints() const;
 
   QString trackedPoint2Text();
   Eigen::Vector2f toImageCoord(Eigen::Vector2f world);
 
   void closeEvent(QCloseEvent *e) override;
+  bool eventFilter(QObject *obj, QEvent *e) override;
 
 public:
   Window(QWidget *parent = 0);
@@ -76,9 +83,8 @@ public slots:
   void on_pushButtonCopy_clicked();
   void on_pushButtonSave_clicked();
 
-  void on_pushButtonDeleteSelected_clicked();
-
   void on_pushButtonOpen_clicked();
 
   void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
+  void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 };

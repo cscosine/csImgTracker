@@ -3,12 +3,29 @@
 #include <QApplication>
 #include <QFont>
 #include <QPalette>
+#include <QProxyStyle>
 #include <QStyle>
 #include <QStyleFactory>
 
 namespace {
 
-// Colors: neutral greys, one blue accent, red only for destructive actions.
+// Fusion, with a left click on a slider moving it to the click (seek), not by
+// a page step.
+class AppStyle : public QProxyStyle {
+public:
+  using QProxyStyle::QProxyStyle;
+
+  int styleHint(StyleHint hint, const QStyleOption *option,
+                const QWidget *widget,
+                QStyleHintReturn *returnData) const override {
+    if (hint == QStyle::SH_Slider_AbsoluteSetButtons) {
+      return Qt::LeftButton;
+    }
+    return QProxyStyle::styleHint(hint, option, widget, returnData);
+  }
+};
+
+// Colors: neutral greys, one blue accent.
 const char *kStyleSheet = R"(
 QMainWindow, QWidget#centralwidget {
   background: #f5f6f8;
@@ -95,15 +112,6 @@ QPushButton[accent="true"]:pressed {
 QPushButton[accent="true"]:disabled {
   background: #93c5fd;
   border-color: #93c5fd;
-}
-
-QPushButton[danger="true"]:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #b91c1c;
-}
-QPushButton[danger="true"]:pressed {
-  background: #fee2e2;
 }
 
 QPushButton[transport="true"] {
@@ -194,11 +202,11 @@ QToolTip {
 } // namespace
 
 void applyAppStyle(QApplication &app) {
-  if (QStyle *fusion = QStyleFactory::create("Fusion")) {
-    app.setStyle(fusion);
-    // the light palette of Fusion, also when the system is in dark mode
-    app.setPalette(fusion->standardPalette());
-  }
+  // the proxy owns the Fusion style (nullptr: the default style of the system)
+  auto *style = new AppStyle(QStyleFactory::create("Fusion"));
+  app.setStyle(style);
+  // the light palette of Fusion, also when the system is in dark mode
+  app.setPalette(style->standardPalette());
 
   QFont font = app.font();
   if (font.pointSizeF() < 10) {
