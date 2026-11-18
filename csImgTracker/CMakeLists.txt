@@ -49,6 +49,13 @@ cs_target_sources(csImgTracker
 	main.cpp
 	Window.ui
 )
+# the icon (icon/generate.sh makes the files from icon/csImgTracker.svg): the window icon, a Qt resource; on Windows
+# also the icon of the executable, a resource compiled by rc
+cs_target_sources(csImgTracker PRIVATE icon/icon.qrc)
+if(WIN32)
+  cs_target_sources(csImgTracker PRIVATE icon/csImgTracker.rc)
+endif()
+
 set_target_properties(csImgTracker PROPERTIES AUTOMOC ON)
 set_target_properties(csImgTracker PROPERTIES AUTOUIC ON)
 set_target_properties(csImgTracker PROPERTIES AUTORCC ON)
