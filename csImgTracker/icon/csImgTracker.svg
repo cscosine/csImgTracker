@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- csImgTracker icon: an ice cube with a tracking mark (x) on a white table, a ruler next to it.
+     The source of the PNG and ICO files of this folder (generate.sh). SVG Tiny: no clip paths. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="table" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef0f3"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- tile: the wall, the white table on its lower part, an outline -->
+  <rect x="8" y="8" width="240" height="240" rx="48" ry="48" fill="url(#wall)"/>
+  <path d="M8,150 H248 V200 A48,48 0 0 1 200,248 H56 A48,48 0 0 1 8,200 Z" fill="url(#table)"/>
+  <rect x="8" y="150" width="240" height="3" fill="#cfd5dd"/>
+  <rect x="9" y="9" width="238" height="238" rx="47" ry="47" fill="none" stroke="#1e3a8a" stroke-opacity="0.35" stroke-width="2"/>
+
+  <!-- shadow of the cube on the table -->
+  <ellipse cx="136" cy="186" rx="68" ry="12" fill="#1f2937" fill-opacity="0.16"/>
+
+  <!-- ruler on the table, in front of the cube -->
+  <g transform="rotate(-8 128 214)">
+    <rect x="30" y="200" width="196" height="28" rx="4" ry="4" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>
+    <g stroke="#78350f" stroke-width="3" stroke-linecap="round">
+      <line x1="46" y1="200" x2="46" y2="216"/>
+      <line x1="62" y1="200" x2="62" y2="209"/>
+      <line x1="78" y1="200" x2="78" y2="209"/>
+      <line x1="94" y1="200" x2="94" y2="209"/>
+      <line x1="110" y1="200" x2="110" y2="216"/>
+      <line x1="126" y1="200" x2="126" y2="209"/>
+      <line x1="142" y1="200" x2="142" y2="209"/>
+      <line x1="158" y1="200" x2="158" y2="209"/>
+      <line x1="174" y1="200" x2="174" y2="216"/>
+      <line x1="190" y1="200" x2="190" y2="209"/>
+      <line x1="206" y1="200" x2="206" y2="209"/>
+    </g>
+  </g>
+
+  <!-- ice cube: top, left and right faces, pale and frosted -->
+  <g stroke="#6fb3dc" stroke-width="4" stroke-linejoin="round">
+    <polygon points="128,44 194,78 128,112 62,78" fill="#f4fbff"/>
+    <polygon points="62,78 128,112 128,184 62,150" fill="#d3effc"/>
+    <polygon points="128,112 194,78 194,150 128,184" fill="#acdcf4"/>
+  </g>
+  <!-- frost and reflections -->
+  <g stroke="#ffffff" stroke-linecap="round" fill="none">
+    <polyline points="68,88 128,119 188,88" stroke-width="4" stroke-opacity="0.9"/>
+    <line x1="72" y1="98" x2="72" y2="142" stroke-width="7" stroke-opacity="0.85"/>
+    <line x1="83" y1="104" x2="83" y2="122" stroke-width="4" stroke-opacity="0.7"/>
+    <line x1="138" y1="128" x2="182" y2="105" stroke-width="5" stroke-opacity="0.6"/>
+    <line x1="150" y1="158" x2="182" y2="141" stroke-width="3" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- the tracking mark: an x on the top face, along its edges -->
+  <g stroke="#e11d48" stroke-width="10" stroke-linecap="round">
+    <line x1="100" y1="64" x2="156" y2="92"/>
+    <line x1="100" y1="92" x2="156" y2="64"/>
+  </g>
+</svg>

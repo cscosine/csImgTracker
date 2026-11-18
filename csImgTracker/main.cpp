@@ -1,5 +1,7 @@
+#include "Style.h"
 #include "Window.h"
 #include <QApplication>
+#include <QIcon>
 #include <QMessageBox>
 #include <QOpenGLContext>
 #include <QOpenGLWidget>
@@ -35,8 +37,20 @@ static void checkAndQuit(const Window &window) {
 
 int main(int argc, char *argv[]) {
   Q_INIT_RESOURCE(vis);
+  Q_INIT_RESOURCE(icon);
 
   QApplication app(argc, argv);
+  QApplication::setApplicationName("csImgTracker");
+  QApplication::setApplicationVersion(CSIMGTRACKER_VERSION);
+  applyAppStyle(app);
+
+  // the icon of the windows (title bar, taskbar, macOS Dock), all its sizes
+  QIcon icon;
+  for (int size : {16, 24, 32, 48, 64, 128, 256}) {
+    icon.addFile(QString(":/icon/csImgTracker-%1.png").arg(size),
+                 QSize(size, size));
+  }
+  QApplication::setWindowIcon(icon);
 
   Window window(nullptr);
   if (QApplication::arguments().contains("--smoke")) {

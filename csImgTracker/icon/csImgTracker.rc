@@ -1,0 +1,2 @@
+// The icon of the Windows executable (Explorer, shortcuts): the first icon resource of the file.
+IDI_ICON1 ICON "csImgTracker.ico"
