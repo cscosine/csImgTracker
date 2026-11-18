@@ -824,6 +824,9 @@ void Window::updatePlayButton(bool playing) {
   ui->pushButtonPlay->setIcon(style()->standardIcon(
       playing ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay));
   ui->pushButtonPlay->setText(playing ? "Pause" : "Play");
+  // setText sets the shortcut to the mnemonic of the text (none): Space again,
+  // else the next Space goes to the button with the focus (e.g. Rotate)
+  ui->pushButtonPlay->setShortcut(QKeySequence(Qt::Key_Space));
 }
 
 void Window::on_pushButtonPrev_clicked() {
