@@ -3,12 +3,8 @@ name: csImgTracker
   push:
     branches:
     - main
-    - dev
     tags:
     - v*.*.*
-  pull_request:
-    branches:
-    - main
   workflow_dispatch: {}
   schedule:
   - cron: 0 3 * * 1
@@ -45,14 +41,14 @@ jobs:
         )
 
         input_folder_base = Path('.')
-        input_manifest_path_variant = [(Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2022/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2022'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2026/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvc-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2026'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2022'), (Path('csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026/csImgTracker-0.2.1-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2026'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.1-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.1-csv1-macos-macos15-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-xcode'), (Path('csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.1-csv1-macos-macos26-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-xcode')]
-        output_manifest_filename = Path('csImgTracker-0.2.1.csOrchestratorManifest')
+        input_manifest_path_variant = [(Path('csImgTracker-0.2.2-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu22.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu24.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvc-default-msvc2022/csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvc-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2022'), (Path('csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvc-default-msvc2026/csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvc-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvc-default-msvc2026'), (Path('csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022/csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvcclang-default-msvc2022.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2022'), (Path('csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026/csImgTracker-0.2.2-csv1-windows-v10-x64-generic-msvcclang-default-msvc2026.csOrchestratorManifest'), 'csv1-windows-v10-x64-generic-msvcclang-default-msvc2026'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-gcc-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-x64-generic-clang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-gcc-default-ninja'), (Path('csImgTracker-0.2.2-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja/csImgTracker-0.2.2-csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja.csOrchestratorManifest'), 'csv1-linux-ubuntu26.04-arm64-generic-clang-default-ninja'), (Path('csImgTracker-0.2.2-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-macos-macos15-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.2-csv1-macos-macos15-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos15-arm64-generic-appleclang-default-xcode'), (Path('csImgTracker-0.2.2-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig/csImgTracker-0.2.2-csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-ninjamulticonfig'), (Path('csImgTracker-0.2.2-csv1-macos-macos26-arm64-generic-appleclang-default-xcode/csImgTracker-0.2.2-csv1-macos-macos26-arm64-generic-appleclang-default-xcode.csOrchestratorManifest'), 'csv1-macos-macos26-arm64-generic-appleclang-default-xcode')]
+        output_manifest_filename = Path('csImgTracker-0.2.2.csOrchestratorManifest')
         project_name = 'csImgTracker'
-        project_version = '0.2.1'
+        project_version = '0.2.2'
         base_path_additional_files = Path(os.environ["GITHUB_WORKSPACE"])
         list_additional_files = []
         output_folder_additional_files = Path(os.environ["GITHUB_WORKSPACE"]) / Path('generated-for-release')
-        output_bundle_file_name = Path('csImgTracker-0.2.1-bundle.tar.gz')
+        output_bundle_file_name = Path('csImgTracker-0.2.2-bundle.tar.gz')
         repo_publish_config_dict = {}
         header_only_variants_sources = {'csv1-linux': 'csv1-linux-ubuntu22.04-x64-generic-gcc-default-ninjamulticonfig', 'csv1-windows': 'csv1-windows-v10-x64-generic-msvc-default-msvc2022', 'csv1-macos': 'csv1-macos-macos15-arm64-generic-appleclang-default-ninjamulticonfig'}
         dependencies = {}
@@ -86,9 +82,9 @@ jobs:
     - name: Upload manifest as artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.1.csOrchestratorManifest
+        name: csImgTracker-0.2.2.csOrchestratorManifest
         path: |-
-          generated-for-release/csImgTracker-0.2.1.csOrchestratorManifest
+          generated-for-release/csImgTracker-0.2.2.csOrchestratorManifest
         overwrite: true
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v3
@@ -96,7 +92,8 @@ jobs:
         files: |-
           artifacts/**/*.tar.gz
           artifacts/**/*.zip
-          generated-for-release/csImgTracker-0.2.1.csOrchestratorManifest
+          generated-for-release/csImgTracker-0.2.2.csOrchestratorManifest
+        prerelease: ${{ contains(github.ref_name, '-rc') }}
       if: ${{ github.ref_type == 'tag' }}
   orchestrator-matrix:
     runs-on: ${{ matrix.runner }}
@@ -361,23 +358,23 @@ jobs:
     steps:
     - name: Repo git self-checkout
       uses: actions/checkout@v6
-    - name: csCMake v1.0.0-rc7 release download tar.gz
+    - name: csCMake v1.0.0-rc8 release download tar.gz
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/csCMake
-        tag: v1.0.0-rc7
-        fileName: csCMake-1.0.0-rc7.tar.gz
+        tag: v1.0.0-rc8
+        fileName: csCMake-1.0.0-rc8.tar.gz
         out-file-path: workspace
-    - name: csCMake v1.0.0-rc7 release extract tar.gz
+    - name: csCMake v1.0.0-rc8 release extract tar.gz
       run: |-
-        tar -xzf workspace/csCMake-1.0.0-rc7.tar.gz -C workspace
-        rm -f workspace/csCMake-1.0.0-rc7.tar.gz
+        tar -xzf workspace/csCMake-1.0.0-rc8.tar.gz -C workspace
+        rm -f workspace/csCMake-1.0.0-rc8.tar.gz
       shell: bash
     - name: Get Precompiled Lib eigen3 download tar.gz
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-eigen3-5.0.1-csv1-${{ matrix.os }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib eigen3 extract tar.gz
@@ -443,7 +440,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-Catch2-3.16.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib Catch2 extract tar.gz
@@ -455,7 +452,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-NamedType-1.1.0-csv1-${{ matrix.os }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib NamedType extract tar.gz
@@ -467,7 +464,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-cpptrace-1.0.4-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib cpptrace extract tar.gz
@@ -479,7 +476,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-fmt-12.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib fmt extract tar.gz
@@ -491,7 +488,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-fmt-eigen-1.0.0-csv1-${{ matrix.os }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib fmt-eigen extract tar.gz
@@ -503,7 +500,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-libassert-2.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib libassert extract tar.gz
@@ -515,7 +512,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-tl-expected-1.3.1-csv1-${{ matrix.os }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib tl-expected extract tar.gz
@@ -527,7 +524,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/third_party_base_libs
-        tag: v0.1.0-rc8
+        tag: v0.1.0-rc10
         fileName: third_party_base_libs-0.1.0-tl-optional-1.1.0-csv1-${{ matrix.os }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib tl-optional extract tar.gz
@@ -631,7 +628,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/csfoundation
-        tag: v0.1.0-rc9
+        tag: v0.1.0-rc10
         fileName: csfoundation-0.1.0-csCore-1.0.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib csCore extract tar.gz
@@ -643,7 +640,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/csfoundation
-        tag: v0.1.0-rc9
+        tag: v0.1.0-rc10
         fileName: csfoundation-0.1.0-csVisOpenGL-1.0.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib csVisOpenGL extract tar.gz
@@ -789,7 +786,7 @@ jobs:
       uses: robinraju/release-downloader@v1.13
       with:
         repository: cscosine/csopencvcpu
-        tag: v5.0.1-rc5
+        tag: v5.0.0-cpu.1-rc1
         fileName: csopencvcpu-5.0.0-opencv-5.0.0-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.tar.gz
         out-file-path: workspace/libs/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
     - name: Get Precompiled Lib opencv extract tar.gz
@@ -829,8 +826,8 @@ jobs:
         install_subdir = Path('csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}')
         variant_string = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         project_name = 'csImgTracker'
-        project_version = '0.2.1'
-        output_file = Path('workspace/install/csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
+        project_version = '0.2.2'
+        output_file = Path('workspace/install/csImgTracker-0.2.2-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
 
         errors_list = get_package_versions_and_write_single_variant_manifest(
             repos_config_file_list=repos_config_file_list,
@@ -861,8 +858,8 @@ jobs:
             load_release_manifest_single_variant_and_prepare_archive,
         )
 
-        input_full_path = Path('workspace/install/csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
-        project_name_and_version = 'csImgTracker-0.2.1'
+        input_full_path = Path('workspace/install/csImgTracker-0.2.2-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}.csOrchestratorManifest')
+        project_name_and_version = 'csImgTracker-0.2.2'
         context_os_architecture_compiler_generator_string = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         input_base_dir = Path('workspace/install')
 
@@ -883,7 +880,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
+        name: csImgTracker-0.2.2-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}
         path: |-
           workspace/install/*.tar.gz
           workspace/install/*.csOrchestratorManifest
@@ -899,7 +896,7 @@ jobs:
         build_dir = Path('workspace/build/csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}')
         build_config = 'debug-release-relWithDebInfo-paranoid'
         project_name = 'csImgTracker'
-        project_name_and_version = 'csImgTracker-0.2.1'
+        project_name_and_version = 'csImgTracker-0.2.2'
         variant = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         output_dir = Path('workspace/deploy-archives')
 
@@ -922,7 +919,7 @@ jobs:
     - name: 'Create Deployment Archives: upload'
       uses: actions/upload-artifact@v7
       with:
-        name: csImgTracker-0.2.1-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}-deployments
+        name: csImgTracker-0.2.2-csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}-deployments
         path: |-
           workspace/deploy-archives/*.tar.gz
           workspace/deploy-archives/*.zip
@@ -960,6 +957,9 @@ jobs:
         $version = "25.2.6"
         $url = "https://github.com/pal1000/mesa-dist-win/releases/download/$version/mesa3d-$version-release-msvc.7z"
         Invoke-WebRequest -Uri $url -OutFile mesa.7z
+        $expected = "4d21205818fb946c3a94ae2552364a1ef14d3f8a907ccd98585907cf536510a5"
+        $actual = (Get-FileHash mesa.7z -Algorithm SHA256).Hash.ToLower()
+        if ($actual -ne $expected) { throw "mesa.7z: SHA-256 $actual, expected $expected" }
         7z e mesa.7z x64/opengl32.dll x64/libgallium_wgl.dll -omesa -y
         Copy-Item mesa/opengl32.dll "$env:SystemRoot/System32/opengl32sw.dll"
         Copy-Item mesa/libgallium_wgl.dll "$env:SystemRoot/System32/libgallium_wgl.dll"
@@ -979,7 +979,7 @@ jobs:
         deployment = 'app'
         archives_dir = Path('workspace/deploy-archives')
         project_name = 'csImgTracker'
-        project_name_and_version = 'csImgTracker-0.2.1'
+        project_name_and_version = 'csImgTracker-0.2.2'
         variant = 'csv1-${{ matrix.os }}-${{ matrix.os_version }}-${{ matrix.architecture }}-${{ matrix.architecture_variant }}-${{ matrix.compiler }}-${{ matrix.compiler_version }}-${{ matrix.generator }}'
         commands = {'linux': ['sh', '-c', 'if command -v xvfb-run >/dev/null; then exec xvfb-run -a "$@"; else exec "$@"; fi', 'sh', '{folder}/bin/csImgTracker', '--smoke'], 'windows': ['{folder}/bin/csImgTracker.exe', '--smoke'], 'macos': ['{folder}/bin/csImgTracker', '--smoke']}
         clean_environment = True
