@@ -44,8 +44,7 @@ cv::Mat argb2bgra(const cv::Mat &mat) {
   return newMat;
 }
 
-cv::Mat adjustChannelsOrder(const cv::Mat &srcMat, MatColorOrder srcOrder,
-                            MatColorOrder targetOrder) {
+cv::Mat adjustChannelsOrder(const cv::Mat &srcMat, MatColorOrder srcOrder, MatColorOrder targetOrder) {
   Q_ASSERT(srcMat.channels() == 4);
 
   if (srcOrder == targetOrder)
@@ -53,8 +52,7 @@ cv::Mat adjustChannelsOrder(const cv::Mat &srcMat, MatColorOrder srcOrder,
 
   cv::Mat desMat;
 
-  if ((srcOrder == MCO_ARGB && targetOrder == MCO_BGRA) ||
-      (srcOrder == MCO_BGRA && targetOrder == MCO_ARGB)) {
+  if ((srcOrder == MCO_ARGB && targetOrder == MCO_BGRA) || (srcOrder == MCO_BGRA && targetOrder == MCO_ARGB)) {
     // ARGB <==> BGRA
     desMat = argb2bgra(srcMat);
   } else if (srcOrder == MCO_ARGB && targetOrder == MCO_RGBA) {
@@ -133,14 +131,11 @@ MatColorOrder getColorOrderOfRGB32Format() {
 
 /* Convert QImage to cv::Mat
  */
-cv::Mat image2Mat(const QImage &img, int requiredMatType,
-                  MatColorOrder requriedOrder) {
+cv::Mat image2Mat(const QImage &img, int requiredMatType, MatColorOrder requriedOrder) {
   int targetDepth = CV_MAT_DEPTH(requiredMatType);
   int targetChannels = CV_MAT_CN(requiredMatType);
-  Q_ASSERT(targetChannels == CV_CN_MAX || targetChannels == 1 ||
-           targetChannels == 3 || targetChannels == 4);
-  Q_ASSERT(targetDepth == CV_8U || targetDepth == CV_16U ||
-           targetDepth == CV_32F);
+  Q_ASSERT(targetChannels == CV_CN_MAX || targetChannels == 1 || targetChannels == 3 || targetChannels == 4);
+  Q_ASSERT(targetDepth == CV_8U || targetDepth == CV_16U || targetDepth == CV_32F);
 
   if (img.isNull())
     return cv::Mat();
@@ -154,8 +149,7 @@ cv::Mat image2Mat(const QImage &img, int requiredMatType,
 
   // Adjust mat channells if needed.
   cv::Mat mat_adjustCn;
-  const float maxAlpha =
-      targetDepth == CV_8U ? 255 : (targetDepth == CV_16U ? 65535 : 1.0);
+  const float maxAlpha = targetDepth == CV_8U ? 255 : (targetDepth == CV_16U ? 65535 : 1.0);
   if (targetChannels == CV_CN_MAX)
     targetChannels = mat0.channels();
   switch (targetChannels) {
@@ -173,38 +167,28 @@ cv::Mat image2Mat(const QImage &img, int requiredMatType,
     break;
   case 3:
     if (mat0.channels() == 1) {
-      cv::cvtColor(mat0, mat_adjustCn,
-                   requriedOrder == MCO_BGR ? cv::COLOR_GRAY2BGR
-                                            : cv::COLOR_GRAY2RGB);
+      cv::cvtColor(mat0, mat_adjustCn, requriedOrder == MCO_BGR ? cv::COLOR_GRAY2BGR : cv::COLOR_GRAY2RGB);
     } else if (mat0.channels() == 3) {
       if (requriedOrder != srcOrder)
         cv::cvtColor(mat0, mat_adjustCn, cv::COLOR_RGB2BGR);
     } else if (mat0.channels() == 4) {
       if (srcOrder == MCO_ARGB) {
-        mat_adjustCn =
-            cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 3));
+        mat_adjustCn = cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 3));
         int ARGB2RGB[] = {1, 0, 2, 1, 3, 2};
         int ARGB2BGR[] = {1, 2, 2, 1, 3, 0};
-        cv::mixChannels(&mat0, 1, &mat_adjustCn, 1,
-                        requriedOrder == MCO_BGR ? ARGB2BGR : ARGB2RGB, 3);
+        cv::mixChannels(&mat0, 1, &mat_adjustCn, 1, requriedOrder == MCO_BGR ? ARGB2BGR : ARGB2RGB, 3);
       } else if (srcOrder == MCO_BGRA) {
-        cv::cvtColor(mat0, mat_adjustCn,
-                     requriedOrder == MCO_BGR ? cv::COLOR_BGRA2BGR
-                                              : cv::COLOR_BGRA2RGB);
+        cv::cvtColor(mat0, mat_adjustCn, requriedOrder == MCO_BGR ? cv::COLOR_BGRA2BGR : cv::COLOR_BGRA2RGB);
       } else { // RGBA
-        cv::cvtColor(mat0, mat_adjustCn,
-                     requriedOrder == MCO_BGR ? cv::COLOR_RGBA2BGR
-                                              : cv::COLOR_RGBA2RGB);
+        cv::cvtColor(mat0, mat_adjustCn, requriedOrder == MCO_BGR ? cv::COLOR_RGBA2BGR : cv::COLOR_RGBA2RGB);
       }
     }
     break;
   case 4:
     if (mat0.channels() == 1) {
       if (requriedOrder == MCO_ARGB) {
-        cv::Mat alphaMat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 1),
-                         cv::Scalar(maxAlpha));
-        mat_adjustCn =
-            cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 4));
+        cv::Mat alphaMat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 1), cv::Scalar(maxAlpha));
+        mat_adjustCn = cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 4));
         cv::Mat in[] = {alphaMat, mat0};
         int from_to[] = {0, 0, 1, 1, 1, 2, 1, 3};
         cv::mixChannels(in, 2, &mat_adjustCn, 1, from_to, 4);
@@ -215,10 +199,8 @@ cv::Mat image2Mat(const QImage &img, int requiredMatType,
       }
     } else if (mat0.channels() == 3) {
       if (requriedOrder == MCO_ARGB) {
-        cv::Mat alphaMat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 1),
-                         cv::Scalar(maxAlpha));
-        mat_adjustCn =
-            cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 4));
+        cv::Mat alphaMat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 1), cv::Scalar(maxAlpha));
+        mat_adjustCn = cv::Mat(mat0.rows, mat0.cols, CV_MAKE_TYPE(mat0.type(), 4));
         cv::Mat in[] = {alphaMat, mat0};
         int from_to[] = {0, 0, 1, 1, 2, 2, 3, 3};
         cv::mixChannels(in, 2, &mat_adjustCn, 1, from_to, 4);
@@ -243,19 +225,16 @@ cv::Mat image2Mat(const QImage &img, int requiredMatType,
   if (mat_adjustCn.empty())
     mat_adjustCn = mat0;
   cv::Mat mat_adjustDepth;
-  mat_adjustCn.convertTo(mat_adjustDepth,
-                         CV_MAKE_TYPE(targetDepth, mat_adjustCn.channels()),
+  mat_adjustCn.convertTo(mat_adjustDepth, CV_MAKE_TYPE(targetDepth, mat_adjustCn.channels()),
                          targetDepth == CV_16U ? 255.0 : 1 / 255.0);
   return mat_adjustDepth;
 }
 
 /* Convert cv::Mat to QImage
  */
-QImage mat2Image(const cv::Mat &mat, MatColorOrder order,
-                 QImage::Format formatHint) {
+QImage mat2Image(const cv::Mat &mat, MatColorOrder order, QImage::Format formatHint) {
   Q_ASSERT(mat.channels() == 1 || mat.channels() == 3 || mat.channels() == 4);
-  Q_ASSERT(mat.depth() == CV_8U || mat.depth() == CV_16U ||
-           mat.depth() == CV_32F);
+  Q_ASSERT(mat.depth() == CV_8U || mat.depth() == CV_16U || mat.depth() == CV_32F);
 
   if (mat.empty())
     return QImage();
@@ -267,8 +246,7 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order,
     format = formatHint;
     if (formatHint != QImage::Format_Indexed8
 #if QT_VERSION >= 0x050500
-        && formatHint != QImage::Format_Alpha8 &&
-        formatHint != QImage::Format_Grayscale8
+        && formatHint != QImage::Format_Alpha8 && formatHint != QImage::Format_Grayscale8
 #endif
     ) {
       format = QImage::Format_Indexed8;
@@ -295,14 +273,12 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order,
     if (format != QImage::Format_RGB32 && format != QImage::Format_ARGB32 &&
         format != QImage::Format_ARGB32_Premultiplied
 #if QT_VERSION >= 0x050200
-        && format != QImage::Format_RGBX8888 &&
-        format != QImage::Format_RGBA8888 &&
+        && format != QImage::Format_RGBX8888 && format != QImage::Format_RGBA8888 &&
         format != QImage::Format_RGBA8888_Premultiplied
 #endif
     ) {
 #if QT_VERSION >= 0x050200
-      format =
-          order == MCO_RGBA ? QImage::Format_RGBA8888 : QImage::Format_ARGB32;
+      format = order == MCO_RGBA ? QImage::Format_RGBA8888 : QImage::Format_ARGB32;
 #else
       format = QImage::Format_ARGB32;
 #endif
@@ -311,8 +287,7 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order,
     // Channel order requried by the target QImage
     MatColorOrder requiredOrder = getColorOrderOfRGB32Format();
 #if QT_VERSION >= 0x050200
-    if (formatHint == QImage::Format_RGBX8888 ||
-        formatHint == QImage::Format_RGBA8888 ||
+    if (formatHint == QImage::Format_RGBX8888 || formatHint == QImage::Format_RGBA8888 ||
         formatHint == QImage::Format_RGBA8888_Premultiplied) {
       requiredOrder = MCO_RGBA;
     }
@@ -328,8 +303,7 @@ QImage mat2Image(const cv::Mat &mat, MatColorOrder order,
   // Adjust mat depth if needed.
   cv::Mat mat_adjustDepth = mat_adjustCn;
   if (mat.depth() != CV_8U)
-    mat_adjustCn.convertTo(mat_adjustDepth, CV_8UC(mat_adjustCn.channels()),
-                           mat.depth() == CV_16U ? 1 / 255.0 : 255.0);
+    mat_adjustCn.convertTo(mat_adjustDepth, CV_8UC(mat_adjustCn.channels()), mat.depth() == CV_16U ? 1 / 255.0 : 255.0);
 
   // Should we convert the image to the format specified by formatHint?
   QImage image = mat2Image_shared(mat_adjustDepth, format);
@@ -376,15 +350,13 @@ cv::Mat image2Mat_shared(const QImage &img, MatColorOrder *order) {
   default:
     return cv::Mat();
   }
-  return cv::Mat(img.height(), img.width(), CV_8UC(img.depth() / 8),
-                 (uchar *)img.bits(), img.bytesPerLine());
+  return cv::Mat(img.height(), img.width(), CV_8UC(img.depth() / 8), (uchar *)img.bits(), img.bytesPerLine());
 }
 
 /* Convert  cv::Mat to QImage without data copy
  */
 QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint) {
-  Q_ASSERT(mat.type() == CV_8UC1 || mat.type() == CV_8UC3 ||
-           mat.type() == CV_8UC4);
+  Q_ASSERT(mat.type() == CV_8UC1 || mat.type() == CV_8UC3 || mat.type() == CV_8UC4);
 
   if (mat.empty())
     return QImage();
@@ -393,8 +365,7 @@ QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint) {
   if (mat.type() == CV_8UC1) {
     if (formatHint != QImage::Format_Indexed8
 #if QT_VERSION >= 0x050500
-        && formatHint != QImage::Format_Alpha8 &&
-        formatHint != QImage::Format_Grayscale8
+        && formatHint != QImage::Format_Alpha8 && formatHint != QImage::Format_Grayscale8
 #endif
     ) {
       formatHint = QImage::Format_Indexed8;
@@ -404,12 +375,10 @@ QImage mat2Image_shared(const cv::Mat &mat, QImage::Format formatHint) {
     formatHint = QImage::Format_RGB888;
 #endif
   } else if (mat.type() == CV_8UC4) {
-    if (formatHint != QImage::Format_RGB32 &&
-        formatHint != QImage::Format_ARGB32 &&
+    if (formatHint != QImage::Format_RGB32 && formatHint != QImage::Format_ARGB32 &&
         formatHint != QImage::Format_ARGB32_Premultiplied
 #if QT_VERSION >= 0x050200
-        && formatHint != QImage::Format_RGBX8888 &&
-        formatHint != QImage::Format_RGBA8888 &&
+        && formatHint != QImage::Format_RGBX8888 && formatHint != QImage::Format_RGBA8888 &&
         formatHint != QImage::Format_RGBA8888_Premultiplied
 #endif
     ) {

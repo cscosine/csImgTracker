@@ -41,17 +41,14 @@ constexpr int kDeleteColumn = 4;
 } // namespace
 
 Window::Window(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::Window()),
-      vis(std::make_shared<Visualizer>()),
-      m_cameraController(
-          std::make_shared<csVisOpenGL::OrbitCameraController>()),
-      _first(true), _rotated(0), video(std::unique_ptr<cv::VideoCapture>()) {
+    : QMainWindow(parent), ui(new Ui::Window()), vis(std::make_shared<Visualizer>()),
+      m_cameraController(std::make_shared<csVisOpenGL::OrbitCameraController>()), _first(true), _rotated(0),
+      video(std::unique_ptr<cv::VideoCapture>()) {
   ui->setupUi(this);
 
   // add camera controller before show
   ui->preview->connectSlotsInterface(*m_cameraController);
-  ui->preview->connectCameraControllerSignals(
-      m_cameraController->getCameraControllerSignals());
+  ui->preview->connectCameraControllerSignals(m_cameraController->getCameraControllerSignals());
 
   // show before adding visualizer
   this->showMaximized();
@@ -68,8 +65,7 @@ Window::Window(QWidget *parent)
 
   m_cameraController->setEnabledControls(enabled);
   m_cameraController->setCameraOrthogonal();
-  m_cameraController->setTraslationLimits(-Eigen::Vector3f::Ones(),
-                                          Eigen::Vector3f::Ones());
+  m_cameraController->setTraslationLimits(-Eigen::Vector3f::Ones(), Eigen::Vector3f::Ones());
   m_cameraController->setMinRadius(2);
   m_cameraController->setMaxRadius(2);
   m_cameraController->setRadius(2, false);
@@ -78,8 +74,7 @@ Window::Window(QWidget *parent)
   m_cameraController->setZNearFar(-1, 1);
 
   ui->treeWidget->setColumnCount(5);
-  ui->treeWidget->setHeaderLabels(
-      {"Frame", "Time [s]", "X [px]", "Y [px]", ""});
+  ui->treeWidget->setHeaderLabels({"Frame", "Time [s]", "X [px]", "Y [px]", ""});
   ui->treeWidget->header()->setStretchLastSection(false);
   ui->treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
   ui->treeWidget->setExpandsOnDoubleClick(false);
@@ -92,15 +87,11 @@ Window::Window(QWidget *parent)
   ui->splitter->setSizes(QList{900, 300});
 
   // transport bar: icons, play/pause follows the state of the button
-  ui->pushButtonPrev->setIcon(
-      style()->standardIcon(QStyle::SP_MediaSeekBackward));
-  ui->pushButtonNext->setIcon(
-      style()->standardIcon(QStyle::SP_MediaSeekForward));
+  ui->pushButtonPrev->setIcon(style()->standardIcon(QStyle::SP_MediaSeekBackward));
+  ui->pushButtonNext->setIcon(style()->standardIcon(QStyle::SP_MediaSeekForward));
   updatePlayButton(false);
-  QObject::connect(ui->pushButtonPlay, &QPushButton::toggled, this,
-                   &Window::updatePlayButton);
-  for (QPushButton *b :
-       {ui->pushButtonPrev, ui->pushButtonPlay, ui->pushButtonNext}) {
+  QObject::connect(ui->pushButtonPlay, &QPushButton::toggled, this, &Window::updatePlayButton);
+  for (QPushButton *b : {ui->pushButtonPrev, ui->pushButtonPlay, ui->pushButtonNext}) {
     b->setFocusPolicy(Qt::NoFocus);
   }
 
@@ -110,20 +101,18 @@ Window::Window(QWidget *parent)
   // Del in the points list: delete the selected point or frame
   auto *deleteShortcut = new QShortcut(QKeySequence::Delete, ui->treeWidget);
   deleteShortcut->setContext(Qt::WidgetWithChildrenShortcut);
-  QObject::connect(deleteShortcut, &QShortcut::activated, this,
-                   [this] { deleteItem(ui->treeWidget->currentItem()); });
+  QObject::connect(deleteShortcut, &QShortcut::activated, this, [this] { deleteItem(ui->treeWidget->currentItem()); });
   ui->pushButtonPlay->setShortcut(QKeySequence(Qt::Key_Space));
   ui->pushButtonPrev->setShortcut(QKeySequence(Qt::Key_Left));
   ui->pushButtonNext->setShortcut(QKeySequence(Qt::Key_Right));
   ui->pushButtonFit->setShortcut(QKeySequence(Qt::Key_F));
 
   // how to use the image view, always visible
-  ui->statusbar->addWidget(
-      new QLabel(QString("Double-click: mark a point     Mouse wheel: zoom     "
-                         "Drag: pan     Space: play / pause     "
-                         "%1 %2: previous / next frame")
-                     .arg(QChar(0x2190))
-                     .arg(QChar(0x2192))));
+  ui->statusbar->addWidget(new QLabel(QString("Double-click: mark a point     Mouse wheel: zoom     "
+                                              "Drag: pan     Space: play / pause     "
+                                              "%1 %2: previous / next frame")
+                                          .arg(QChar(0x2190))
+                                          .arg(QChar(0x2192))));
   ui->statusbar->setSizeGripEnabled(false);
 
   // Space plays / pauses wherever the focus is in this window, the points
@@ -138,8 +127,7 @@ Window::Window(QWidget *parent)
   // it zooming without end.
   ui->preview->setFocusPolicy(Qt::NoFocus);
 
-  QObject::connect(&ui->preview->getFrameSignals(),
-                   &csVisOpenGL::FrameSignals::mouseDoubleClick, this,
+  QObject::connect(&ui->preview->getFrameSignals(), &csVisOpenGL::FrameSignals::mouseDoubleClick, this,
                    &Window::on_imgDoubleClick);
 
   resetNoVideoData();
@@ -165,12 +153,11 @@ void Window::closeEvent(QCloseEvent *e) {
   if (_pointsPerFrame.empty()) {
     return;
   }
-  auto res = QMessageBox::question(
-      this, "Quit?",
-      QString("Close csImgTracker? The %1 tracked point(s) are lost if not "
-              "saved.")
-          .arg(countPoints()),
-      QMessageBox::Yes | QMessageBox::No);
+  auto res = QMessageBox::question(this, "Quit?",
+                                   QString("Close csImgTracker? The %1 tracked point(s) are lost if not "
+                                           "saved.")
+                                       .arg(countPoints()),
+                                   QMessageBox::Yes | QMessageBox::No);
   if (res != QMessageBox::Yes) {
     e->ignore();
   }
@@ -184,8 +171,7 @@ bool Window::eventFilter(QObject *obj, QEvent *e) {
   if (e->type() == QEvent::ShortcutOverride) {
     auto *w = qobject_cast<QWidget *>(obj);
     auto *ke = static_cast<QKeyEvent *>(e);
-    if (w != nullptr && w->window() == this &&
-        ke->modifiers() == Qt::NoModifier) {
+    if (w != nullptr && w->window() == this && ke->modifiers() == Qt::NoModifier) {
       if (ke->key() == Qt::Key_Space) {
         e->ignore(); // not claimed: the shortcut runs
         return true;
@@ -269,8 +255,7 @@ void Window::updateVideoInfoCard() {
   const QLocale locale;
   QString duration = "-";
   if (videoInfo.fps > 0) {
-    duration =
-        locale.toString(videoInfo.numFrames / videoInfo.fps, 'f', 1) + " s";
+    duration = locale.toString(videoInfo.numFrames / videoInfo.fps, 'f', 1) + " s";
   }
   ui->labelVideoInfo->setTextFormat(Qt::RichText);
   ui->labelVideoInfo->setText(QString("<b>%1</b><br>"
@@ -293,19 +278,17 @@ static QString defaultVideoDir() {
   if (data.exists()) {
     return data.absolutePath();
   }
-  auto videoLocations = QStandardPaths::standardLocations(
-      QStandardPaths::StandardLocation::MoviesLocation);
+  auto videoLocations = QStandardPaths::standardLocations(QStandardPaths::StandardLocation::MoviesLocation);
   return videoLocations.size() > 0 ? videoLocations[0] : "";
 }
 
 void Window::on_pushButtonOpen_clicked() {
   if (!_pointsPerFrame.empty()) {
-    auto res = QMessageBox::question(
-        this, "Open another video?",
-        QString("Opening another video discards the %1 tracked point(s) of "
-                "this one, if not saved. Continue?")
-            .arg(countPoints()),
-        QMessageBox::Yes | QMessageBox::No);
+    auto res = QMessageBox::question(this, "Open another video?",
+                                     QString("Opening another video discards the %1 tracked point(s) of "
+                                             "this one, if not saved. Continue?")
+                                         .arg(countPoints()),
+                                     QMessageBox::Yes | QMessageBox::No);
     if (res != QMessageBox::Yes) {
       return;
     }
@@ -317,8 +300,7 @@ void Window::on_pushButtonOpen_clicked() {
 
   QString basedir = defaultVideoDir();
 
-  QString filename = QFileDialog::getOpenFileName(this, "Load a video file",
-                                                  basedir, filter, &selFilter);
+  QString filename = QFileDialog::getOpenFileName(this, "Load a video file", basedir, filter, &selFilter);
 
   if (filename.size() == 0) {
     // cancelled, return
@@ -329,8 +311,7 @@ void Window::on_pushButtonOpen_clicked() {
   bool ok = newVideo->open(filename.toUtf8().constData());
   // video open correctly?
   if (!ok) {
-    QMessageBox::critical(this, "Error",
-                          "Error opening video from " + filename);
+    QMessageBox::critical(this, "Error", "Error opening video from " + filename);
   } else {
     // swap video and newVideo
     video.swap(newVideo);
@@ -374,23 +355,19 @@ Eigen::Vector2f Window::toImageCoord(Eigen::Vector2f world) {
   if (_rotated == 0) {
     Eigen::Vector2f world_r(world.x(), world.y());
     world_r.y() = 1 - world_r.y(); // y cartesian
-    return world_r.array() *
-           Eigen::Vector2f(videoInfo.width, videoInfo.height).array();
+    return world_r.array() * Eigen::Vector2f(videoInfo.width, videoInfo.height).array();
   } else if (_rotated == 1) {
     Eigen::Vector2f world_r(world.y(), 1 - world.x());
     world_r.y() = 1 - world_r.y(); // y cartesian
-    return world_r.array() *
-           Eigen::Vector2f(videoInfo.height, videoInfo.width).array();
+    return world_r.array() * Eigen::Vector2f(videoInfo.height, videoInfo.width).array();
   } else if (_rotated == 2) {
     Eigen::Vector2f world_r(1 - world.x(), 1 - world.y());
     world_r.y() = 1 - world_r.y(); // y cartesian
-    return world_r.array() *
-           Eigen::Vector2f(videoInfo.width, videoInfo.height).array();
+    return world_r.array() * Eigen::Vector2f(videoInfo.width, videoInfo.height).array();
   } else if (_rotated == 3) {
     Eigen::Vector2f world_r(1 - world.y(), world.x());
     world_r.y() = 1 - world_r.y(); // y cartesian
-    return world_r.array() *
-           Eigen::Vector2f(videoInfo.height, videoInfo.width).array();
+    return world_r.array() * Eigen::Vector2f(videoInfo.height, videoInfo.width).array();
   }
   return world;
 }
@@ -423,12 +400,10 @@ void Window::on_pushButtonSave_clicked() {
   QString selFilter = "Text File (*.txt)";
   QString filter = selFilter;
 
-  auto docLocations = QStandardPaths::standardLocations(
-      QStandardPaths::StandardLocation::DocumentsLocation);
+  auto docLocations = QStandardPaths::standardLocations(QStandardPaths::StandardLocation::DocumentsLocation);
   QString basedir = docLocations.size() > 0 ? docLocations[0] : "";
 
-  auto fname =
-      QFileDialog::getSaveFileName(this, "Save", basedir, filter, &selFilter);
+  auto fname = QFileDialog::getSaveFileName(this, "Save", basedir, filter, &selFilter);
   if (fname.size() > 0) {
     QFile file(fname);
     if (file.open(QIODevice::WriteOnly)) {
@@ -436,8 +411,7 @@ void Window::on_pushButtonSave_clicked() {
       auto s = trackedPoint2Text();
       stream << s << Qt::endl;
     } else {
-      QMessageBox::critical(this, "Error",
-                            QString("Error saving to %1").arg(fname));
+      QMessageBox::critical(this, "Error", QString("Error saving to %1").arg(fname));
     }
   }
 }
@@ -454,17 +428,13 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   if (_curFrame != n) {
     bool b = video->set(cv::CAP_PROP_POS_FRAMES, n);
     if (!b) {
-      frameError(QString("Error in video seek to frame %1").arg(n + 1),
-                 shownFrame);
+      frameError(QString("Error in video seek to frame %1").arg(n + 1), shownFrame);
       return;
     }
 
     _curFrame = video->get(cv::CAP_PROP_POS_FRAMES);
     if (_curFrame != n) {
-      frameError(QString("Error in video seek to frame %1 (at frame %2)")
-                     .arg(n + 1)
-                     .arg(_curFrame + 1),
-                 shownFrame);
+      frameError(QString("Error in video seek to frame %1 (at frame %2)").arg(n + 1).arg(_curFrame + 1), shownFrame);
       return;
     }
   }
@@ -486,27 +456,24 @@ void Window::on_horizontalSlider_valueChanged(int n) {
   }
 
   if (frame.empty()) {
-    frameError(QString("Error in video acquisition of frame %1").arg(n + 1),
-               shownFrame);
+    frameError(QString("Error in video acquisition of frame %1").arg(n + 1), shownFrame);
     return;
   }
 
   QImage img = mat2Image(frame);
 
   if (img.isNull()) {
-    frameError(QString("Error converting frame %1 to image").arg(n + 1),
-               shownFrame);
+    frameError(QString("Error converting frame %1 to image").arg(n + 1), shownFrame);
     return;
   }
 
   _curimg = img.convertedTo(QImage::Format::Format_RGB32);
   _curMsec = msec;
 
-  ui->labelVideoPos->setText(
-      QString("Frame %1 / %2     %3 s")
-          .arg(_curFrame + 1)
-          .arg(videoInfo.numFrames)
-          .arg(QLocale().toString(_curMsec / 1000, 'f', 3)));
+  ui->labelVideoPos->setText(QString("Frame %1 / %2     %3 s")
+                                 .arg(_curFrame + 1)
+                                 .arg(videoInfo.numFrames)
+                                 .arg(QLocale().toString(_curMsec / 1000, 'f', 3)));
 
   ui->preview->makeCurrent();
   vis->setImage(_curimg);
@@ -612,8 +579,7 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
   // Get clicking position in OpenGL screen coordinates ([-1, 1], [-1, 1])
   const auto &camera = ui->preview->getCamera();
 
-  Eigen::Vector2f clickPos =
-      Eigen::Vector2f(e.pos().x(), camera.getViewSize().y() - 1 - e.pos().y());
+  Eigen::Vector2f clickPos = Eigen::Vector2f(e.pos().x(), camera.getViewSize().y() - 1 - e.pos().y());
   // normalize to -1:1
   clickPos.x() /= camera.getViewSize().x();
   clickPos.y() /= camera.getViewSize().y();
@@ -621,9 +587,7 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
 
   // Compute texture coordinates assuming (-1, -1) is the top-left corner
   Eigen::Vector2f world2DCoords =
-      (camera.getViewProjection().inverse() *
-       Eigen::Vector4f(clickPos.x(), clickPos.y(), 0, 1))
-          .head<2>();
+      (camera.getViewProjection().inverse() * Eigen::Vector4f(clickPos.x(), clickPos.y(), 0, 1)).head<2>();
 
   double ir = double(videoInfo.width) / double(videoInfo.height);
   if (world2DCoords.y() < -1.0)
@@ -638,12 +602,10 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
   // a point of this frame at the same pixel (the displayed integer image
   // coordinates) already exists: nothing to add
   const auto imgCoord = toImageCoord(world2DCoords);
-  if (const auto it = _pointsPerFrame.find(_curFrame);
-      it != _pointsPerFrame.end()) {
+  if (const auto it = _pointsPerFrame.find(_curFrame); it != _pointsPerFrame.end()) {
     for (const auto &p : it->second.points) {
       const auto ic = toImageCoord(p);
-      if (int(ic.x()) == int(imgCoord.x()) &&
-          int(ic.y()) == int(imgCoord.y())) {
+      if (int(ic.x()) == int(imgCoord.x()) && int(ic.y()) == int(imgCoord.y())) {
         return;
       }
     }
@@ -665,9 +627,7 @@ void Window::on_imgDoubleClick(QMouseEvent &e) {
   // add this element
   TreeWidgetItem *childItem = new TreeWidgetItem(nullptr);
   childItem->setData(0, Qt::UserRole, _curFrame);
-  childItem->setData(
-      0, Qt::UserRole + 1,
-      static_cast<int>(_pointsPerFrame[_curFrame].points.size()) - 1);
+  childItem->setData(0, Qt::UserRole + 1, static_cast<int>(_pointsPerFrame[_curFrame].points.size()) - 1);
 
   childItem->setText(2, QString("%1").arg(int(imgCoord.x())));
   childItem->setText(3, QString("%1").arg(int(imgCoord.y())));
@@ -690,8 +650,7 @@ void Window::on_pushButtonFit_clicked() {
   auto viewSize = camera.getViewSize();
   float sr = float(viewSize.x()) / float(viewSize.y());
   float ir = float(_curimg.width()) / float(_curimg.height());
-  float scale =
-      (_rotated % 2 == 0) ? std::max(1.0f, ir / sr) : std::max(ir, 1.0f / sr);
+  float scale = (_rotated % 2 == 0) ? std::max(1.0f, ir / sr) : std::max(ir, 1.0f / sr);
 
   m_cameraController->setScale(scale, false);
   m_cameraController->setScaleLimits(scale / 4.0f, scale * 4.0f);
@@ -716,8 +675,7 @@ void Window::on_pushButtonPlay_clicked() {
   }
 }
 
-void Window::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item,
-                                             int column) {
+void Window::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column) {
   if (ui->pushButtonPlay->isChecked())
     return;
   int curFrame = item->data(0, Qt::UserRole).toInt();
@@ -747,11 +705,10 @@ void Window::deleteItem(QTreeWidgetItem *item) {
 
   // check if it is not current frame
   if (curFrame != ui->horizontalSlider->value()) {
-    auto ans =
-        QMessageBox::question(this, "Confirm",
-                              "You are deleting a point that is not in current "
-                              "frame, are you sure you want to continue?",
-                              QMessageBox::Yes | QMessageBox::No);
+    auto ans = QMessageBox::question(this, "Confirm",
+                                     "You are deleting a point that is not in current "
+                                     "frame, are you sure you want to continue?",
+                                     QMessageBox::Yes | QMessageBox::No);
     if (ans == QMessageBox::No) {
       return;
     }
@@ -760,11 +717,10 @@ void Window::deleteItem(QTreeWidgetItem *item) {
 
   int curId = item->data(0, Qt::UserRole + 1).toInt();
   if (curId == -1) {
-    auto ans =
-        QMessageBox::question(this, "Confirm",
-                              "You are deleting ALL points in this frame, are "
-                              "you sure you want to continue?",
-                              QMessageBox::Yes | QMessageBox::No);
+    auto ans = QMessageBox::question(this, "Confirm",
+                                     "You are deleting ALL points in this frame, are "
+                                     "you sure you want to continue?",
+                                     QMessageBox::Yes | QMessageBox::No);
     if (ans == QMessageBox::No) {
       return;
     }
@@ -778,8 +734,7 @@ void Window::deleteItem(QTreeWidgetItem *item) {
   } else {
 
     // delete from memory
-    _pointsPerFrame[curFrame].points.erase(
-        _pointsPerFrame[curFrame].points.begin() + curId);
+    _pointsPerFrame[curFrame].points.erase(_pointsPerFrame[curFrame].points.begin() + curId);
 
     // update indexes of remaining
     auto parent = _itemRootPerFrame[curFrame];
@@ -806,8 +761,7 @@ void Window::deleteItem(QTreeWidgetItem *item) {
   }
 
   // update visualizer
-  if (const auto it = _pointsPerFrame.find(_curFrame);
-      it != _pointsPerFrame.end()) {
+  if (const auto it = _pointsPerFrame.find(_curFrame); it != _pointsPerFrame.end()) {
     vis->showPoints(it->second.points);
   } else {
     vis->showPoints({});
@@ -821,21 +775,16 @@ void Window::setSeekEnabled(bool enabled) {
 }
 
 void Window::updatePlayButton(bool playing) {
-  ui->pushButtonPlay->setIcon(style()->standardIcon(
-      playing ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay));
+  ui->pushButtonPlay->setIcon(style()->standardIcon(playing ? QStyle::SP_MediaPause : QStyle::SP_MediaPlay));
   ui->pushButtonPlay->setText(playing ? "Pause" : "Play");
   // setText sets the shortcut to the mnemonic of the text (none): Space again,
   // else the next Space goes to the button with the focus (e.g. Rotate)
   ui->pushButtonPlay->setShortcut(QKeySequence(Qt::Key_Space));
 }
 
-void Window::on_pushButtonPrev_clicked() {
-  ui->horizontalSlider->setValue(ui->horizontalSlider->value() - 1);
-}
+void Window::on_pushButtonPrev_clicked() { ui->horizontalSlider->setValue(ui->horizontalSlider->value() - 1); }
 
-void Window::on_pushButtonNext_clicked() {
-  ui->horizontalSlider->setValue(ui->horizontalSlider->value() + 1);
-}
+void Window::on_pushButtonNext_clicked() { ui->horizontalSlider->setValue(ui->horizontalSlider->value() + 1); }
 
 void Window::on_pushButtonAbout_clicked() {
   AboutDialog dialog(this);
