@@ -1,6 +1,5 @@
 project(csImgTracker LANGUAGES CXX)
 
-
 # prepare custom project asserts, note: use standard find_package
 find_package(csCore REQUIRED COMPONENTS assert CONFIG)
 
@@ -8,13 +7,13 @@ list(APPEND CMAKE_MODULE_PATH "${csCore_BASE_DIR}/cmake/csCore/assert/")
 include(csAssert)
 
 # set defaults for Paranoid additional configuration
-csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT RELEASE Paranoid ON)
-csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT RELWITHDEBINFO Paranoid ON)
-csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT DEBUG Paranoid ON)
-csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT PARANOID Paranoid ON)
-csSetAssertDefaultOnForConfig(${PROJECT_NAME} ASSERT SAFE_MATH Paranoid ON)
+cssetassertdefaultonforconfig(${PROJECT_NAME} ASSERT RELEASE Paranoid ON)
+cssetassertdefaultonforconfig(${PROJECT_NAME} ASSERT RELWITHDEBINFO Paranoid ON)
+cssetassertdefaultonforconfig(${PROJECT_NAME} ASSERT DEBUG Paranoid ON)
+cssetassertdefaultonforconfig(${PROJECT_NAME} ASSERT PARANOID Paranoid ON)
+cssetassertdefaultonforconfig(${PROJECT_NAME} ASSERT SAFE_MATH Paranoid ON)
 
-csAssertGenerateProject(csImgTracker csImgTracker) #generate target csImgTracker::csImgTrackerAssert
+cs_assert_generate_project(csImgTracker csImgTracker) #generate target csImgTracker::csImgTrackerAssert
 list(POP_BACK CMAKE_MODULE_PATH)
 
 # prepare standard library
@@ -36,24 +35,25 @@ message(STATUS "OpenCVConfig.cmake is located at: ${OpenCV_CONFIG_PATH}")
 
 cs_find_package(csImgTracker PUBLIC Qt6 COMPONENTS Widgets REQUIRED CONFIG)
 
-cs_target_sources(csImgTracker
-	PRIVATE
-  AboutDialog.h
-  AboutDialog.cpp
-  Common.h
-  Common.cpp
-  CvMatAndQImage.h
-  CvMatAndQImage.cpp
-  Style.h
-  Style.cpp
-	Visualizer.h
-	Visualizer.cpp
-	TreeWidgetItem.h
-  TreeWidgetItem.cpp
-  Window.h
-	Window.cpp
-	main.cpp
-	Window.ui
+cs_target_sources(
+  csImgTracker
+  PRIVATE
+    AboutDialog.h
+    AboutDialog.cpp
+    Common.h
+    Common.cpp
+    CvMatAndQImage.h
+    CvMatAndQImage.cpp
+    Style.h
+    Style.cpp
+    Visualizer.h
+    Visualizer.cpp
+    TreeWidgetItem.h
+    TreeWidgetItem.cpp
+    Window.h
+    Window.cpp
+    main.cpp
+    Window.ui
 )
 # the icon (icon/generate.sh makes the files from icon/csImgTracker.svg): the window icon, a Qt resource; on Windows
 # also the icon of the executable, a resource compiled by rc
@@ -69,20 +69,21 @@ set_target_properties(csImgTracker PROPERTIES AUTOMOC ON)
 set_target_properties(csImgTracker PROPERTIES AUTOUIC ON)
 set_target_properties(csImgTracker PROPERTIES AUTORCC ON)
 
-cs_target_link_libraries(csImgTracker
-	PRIVATE
-		Eigen3::Eigen
-    	csCore::core
-		csCore::eigenUtils
-		csVisOpenGL::csVisOpenGL
-		csVisOpenGL::renderers
-		csVisOpenGL::painters
-		csImgTracker::csImgTrackerAssert
-		csImgTracker::cscmake_base_include
-		Qt6::Widgets
+cs_target_link_libraries(
+  csImgTracker
+  PRIVATE
+    Eigen3::Eigen
+    csCore::core
+    csCore::eigenUtils
+    csVisOpenGL::csVisOpenGL
+    csVisOpenGL::renderers
+    csVisOpenGL::painters
+    csImgTracker::csImgTrackerAssert
+    csImgTracker::cscmake_base_include
+    Qt6::Widgets
     opencv_core
-	opencv_videoio
-	opencv_imgcodecs
+    opencv_videoio
+    opencv_imgcodecs
 )
 
 cs_install_target(csImgTracker COMPONENT csImgTracker DEFAULT)
