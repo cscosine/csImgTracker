@@ -15,8 +15,7 @@ class AppStyle : public QProxyStyle {
 public:
   using QProxyStyle::QProxyStyle;
 
-  int styleHint(StyleHint hint, const QStyleOption *option,
-                const QWidget *widget,
+  int styleHint(StyleHint hint, const QStyleOption *option, const QWidget *widget,
                 QStyleHintReturn *returnData) const override {
     if (hint == QStyle::SH_Slider_AbsoluteSetButtons) {
       return Qt::LeftButton;

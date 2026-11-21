@@ -20,18 +20,13 @@ static void checkAndQuit(const Window &window) {
   const auto views = window.findChildren<QOpenGLWidget *>();
   for (const QOpenGLWidget *view : views) {
     if (!view->isValid() || view->context() == nullptr) {
-      std::cerr << "smoke: failed, no OpenGL context for "
-                << view->objectName().toStdString() << std::endl;
+      std::cerr << "smoke: failed, no OpenGL context for " << view->objectName().toStdString() << std::endl;
       std::_Exit(1);
     }
   }
-  const QSurfaceFormat format =
-      views.isEmpty() ? QSurfaceFormat() : views.front()->format();
-  std::cout << "smoke: ok, platform "
-            << QApplication::platformName().toStdString() << ", "
-            << views.size() << " OpenGL view(s), OpenGL "
-            << format.majorVersion() << "." << format.minorVersion()
-            << std::endl;
+  const QSurfaceFormat format = views.isEmpty() ? QSurfaceFormat() : views.front()->format();
+  std::cout << "smoke: ok, platform " << QApplication::platformName().toStdString() << ", " << views.size()
+            << " OpenGL view(s), OpenGL " << format.majorVersion() << "." << format.minorVersion() << std::endl;
   std::_Exit(0);
 }
 
@@ -47,8 +42,7 @@ int main(int argc, char *argv[]) {
   // the icon of the windows (title bar, taskbar, macOS Dock), all its sizes
   QIcon icon;
   for (int size : {16, 24, 32, 48, 64, 128, 256}) {
-    icon.addFile(QString(":/icon/csImgTracker-%1.png").arg(size),
-                 QSize(size, size));
+    icon.addFile(QString(":/icon/csImgTracker-%1.png").arg(size), QSize(size, size));
   }
   QApplication::setWindowIcon(icon);
 

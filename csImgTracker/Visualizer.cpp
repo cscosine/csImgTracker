@@ -9,9 +9,8 @@
 Visualizer::Visualizer() : csVisOpenGL::VisualizerInterface(), tid(-1) {}
 Visualizer::~Visualizer() {}
 
-void Visualizer::initialize(
-    csVisOpenGL::ShaderFactory &shaderFactory,
-    std::shared_ptr<QOpenGLExtraFunctions> const &glExtraFunctions) {
+void Visualizer::initialize(csVisOpenGL::ShaderFactory &shaderFactory,
+                            std::shared_ptr<QOpenGLExtraFunctions> const &glExtraFunctions) {
   bkgRenderer.initialize(shaderFactory, glExtraFunctions);
 
   {
@@ -42,13 +41,9 @@ void Visualizer::initialize(
 #endif
 }
 
-void Visualizer::paintQt(const csVisOpenGL::Camera &camera, QPainter &painter) {
-  pointsRederer.draw(camera);
-}
+void Visualizer::paintQt(const csVisOpenGL::Camera &camera, QPainter &painter) { pointsRederer.draw(camera); }
 
-void Visualizer::paintBackground(const csVisOpenGL::Camera &camera) {
-  bkgRenderer.draw(camera);
-}
+void Visualizer::paintBackground(const csVisOpenGL::Camera &camera) { bkgRenderer.draw(camera); }
 
 void Visualizer::paint(const csVisOpenGL::Camera &camera) {
 #ifdef SHOW_AXES
@@ -97,9 +92,8 @@ void Visualizer::setImage(const QImage &img) {
     texCoords.col(1) = Eigen::Vector2f(1, 0);
     texCoords.col(2) = Eigen::Vector2f(1, 1);
     texCoords.col(3) = Eigen::Vector2f(0, 1);
-    imageRenderer.setTexture(
-        tid, vectCoords, texCoords,
-        csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
+    imageRenderer.setTexture(tid, vectCoords, texCoords,
+                             csVisOpenGL::SingleTextureRenderer::TextureInterpolation::Linear);
   } else {
     tid = -1;
     imageRenderer.resetTexture();
