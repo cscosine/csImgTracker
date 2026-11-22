@@ -7,7 +7,7 @@ name: csImgTracker
     - v*.*.*
   workflow_dispatch: {}
   schedule:
-  - cron: 15 5 * * 1
+  - cron: 40 4 * * 1
 jobs:
   release-from-artifacts:
     needs: orchestrator-matrix
