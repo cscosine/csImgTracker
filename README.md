@@ -51,7 +51,8 @@ branch: `copier update --defaults`.
 `./open-code.sh [filter]` (Windows: `.\open-code.ps1 [filter]`) opens VS Code with the venv active. When the project has
 C++ sources of its own (a `CMakeLists.txt` and a `csCMakeProjectSetup.json`), it attaches the window to one of their
 builds, made by a local run of the recipe (`python csImgTracker_project.py`); before the first build it opens a
-Python-only window. Without C++ sources it opens the folder. The filter is a part of the build folder name or of the compiler (`gcc`, `clang`, `msvc`, `clang-cl`),
+Python-only window. Without C++ sources it opens the folder.
+The filter is a part of the build folder name or of the compiler (`gcc`, `clang`, `msvc`, `clang-cl`),
 needed when there are several builds.
 
 The script writes a **workspace file** for the chosen build, `<build>/csImgTracker.code-workspace`, and opens it
