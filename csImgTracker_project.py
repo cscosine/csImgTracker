@@ -46,7 +46,7 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
 
     o = create_orchestrator_factory_all_supported_cases(
         name="csImgTracker",
-        version="0.2.2",
+        version="0.2.3",
         execution_matrix_name="orchestrator-matrix",
     )
 
@@ -54,7 +54,7 @@ def create_orchestrator() -> OptionalOrchestratorWithReport:
         name="csImgTracker",
         # staggered weekly run (UTC), one project at a time in the build-train order (no shared runners)
         schedule=Cron.weekly(DayOfWeek.MON, hour=4, minute=40),
-        version="0.2.2",
+        version="0.2.3",
         base_install_dir=base_install_dir,
         # opt-in variants: Ubuntu 26.04 (as 22.04/24.04), macOS 15/26 (Ninja Multi-Config, Xcode)
         additional_matrix_list=(
